@@ -1,5 +1,6 @@
 # ComfyUI_CreaPrompt
 Generate prompts randomly
+
 For best results, use CreaPrompt_Ultimate checkpoint
 
 [https://civitai.com/models/383364?modelVersionId=539661](https://civitai.com/models/383364?modelVersionId=602452)
