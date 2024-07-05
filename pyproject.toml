@@ -9,6 +9,6 @@ Repository = "https://github.com/tritant/ComfyUI_CreaPrompt"
 #  Used by Comfy Registry https://comfyregistry.org
 
 [tool.comfy]
-PublisherId = ""
+PublisherId = "tritant"
 DisplayName = "ComfyUI_CreaPrompt"
 Icon = ""
