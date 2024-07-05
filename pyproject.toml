@@ -1,0 +1,14 @@
+[project]
+name = "comfyui_creaprompt"
+description = "Generate random prompts easily."
+version = "1.0.0"
+license = "LICENSE"
+
+[project.urls]
+Repository = "https://github.com/tritant/ComfyUI_CreaPrompt"
+#  Used by Comfy Registry https://comfyregistry.org
+
+[tool.comfy]
+PublisherId = "tritant"
+DisplayName = "ComfyUI_CreaPrompt"
+Icon = ""
