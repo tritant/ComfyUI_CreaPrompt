@@ -29,6 +29,7 @@ def select_random_line_from_csv_file(file):
 name_of_files = getfilename()
 
 class CreaPrompt:
+
     RETURN_TYPES = (
         "STRING",
         "INT",
@@ -60,37 +61,64 @@ class CreaPrompt:
         return {
             "required": required,
             "optional": {
-                "seed": (
-                    "INT",
-                    {"default": 0, "min": 0, "max": 1125899906842624},
-                ),
-            },
+                "Prompt_count":("INT", {"default": 1, "min": 1, "max": 1000}),
+                "seed": ("INT", {"default": 0, "min": 0, "max": 1125899906842624}),
+            }
         }    
     def create_prompt(self, **kwargs):
         seed = kwargs.get("seed", 0)
+        prompts_count = kwargs.get("Prompt_count", 0)
+        print(prompts_count)
         concatenated_values = ""
+        final_values = ""
         values = []
         values = [""] * len(name_of_files)
-        for i, filename in enumerate(name_of_files):
+        for c in range(prompts_count):
+          for i, filename in enumerate(name_of_files):
              if kwargs.get(filename, 0) == "🎲random":
                     values[i] = select_random_line_from_csv_file(filename)
              else:      
                     values[i] = kwargs.get(filename, 0)
                     values[i] = values[i].strip()
-        for value in values:
+          for value in values:
              if value != "disabled":
                     concatenated_values += value + ","
+          print(f"CreaPrompt prompt: {concatenated_values [:-1]}")
+          final_values += concatenated_values + "\n" 
+          concatenated_values = ""
+        final_values = final_values.strip()  
         print(f"CreaPrompt Seed  : {seed}")
-        final_prompt = concatenated_values
-        print(f"CreaPrompt prompt: {final_prompt}")
         return (
-            final_prompt,
+            final_values,
             seed,
         )
+        
+class CreaPrompt_list:
+
+    @classmethod
+    def INPUT_TYPES(s):
+        return {"required": {"Multi_prompts": ("STRING", {"multiline": True, "default": "body_text"}),
+                             "prefix": ("STRING", {"multiline": True, "default": ""}),
+                             "suffix": ("STRING", {"multiline": True, "default": ""}),
+                            }
+        }
+    RETURN_TYPES = ("STRING",)
+    RETURN_NAMES = ("prompt",)
+    OUTPUT_IS_LIST = (True, True, False)
+    FUNCTION = "create_list"
+    CATEGORY = "CreaPrompt"
+
+    def create_list(self, Multi_prompts, prefix="", suffix=""):
+        lines = Multi_prompts.split('\n')
+        prompt_list_out = [prefix + line + suffix for line in lines]
+        return (prompt_list_out,)       
+        
 NODE_CLASS_MAPPINGS = {
-    "CreaPrompt": CreaPrompt,
+    "CreaPrompt": CreaPrompt, 
+    "CreaPrompt List": CreaPrompt_list,
 }
 NODE_DISPLAY_NAME_MAPPINGS = {
     "CreaPrompt": "CreaPrompt",
+    "CreaPrompt List": "CreaPrompt Multi Prompts",
     "CSL": "Comma Separated List",
 }
