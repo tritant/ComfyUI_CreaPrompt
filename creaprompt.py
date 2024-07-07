@@ -14,6 +14,13 @@ def getfilename():
            name.append(filename[3:-4])
     return name
     
+def select_random_line_from_collection():
+    file_path = os.path.join(folder_path, "collection.txt")
+    with open(file_path, "r", encoding="utf-8") as file:
+      lines = file.readlines()
+      readline = random.choice(lines).strip()
+      return readline
+    
 def select_random_line_from_csv_file(file):
     chosen_lines = []
     for filename in os.listdir(folder_path):
@@ -62,36 +69,50 @@ class CreaPrompt:
             "required": required,
             "optional": {
                 "Prompt_count":("INT", {"default": 1, "min": 1, "max": 1000}),
+                "CreaPrompt_Collection": (["disabled"] + ["enabled"], {"default": "disabled"}),
                 "seed": ("INT", {"default": 0, "min": 0, "max": 1125899906842624}),
             }
         }    
     def create_prompt(self, **kwargs):
         seed = kwargs.get("seed", 0)
         prompts_count = kwargs.get("Prompt_count", 0)
-        print(prompts_count)
         concatenated_values = ""
+        prompt_value = ""
         final_values = ""
         values = []
         values = [""] * len(name_of_files)
-        for c in range(prompts_count):
-          for i, filename in enumerate(name_of_files):
-             if kwargs.get(filename, 0) == "🎲random":
-                    values[i] = select_random_line_from_csv_file(filename)
-             else:      
-                    values[i] = kwargs.get(filename, 0)
-                    values[i] = values[i].strip()
-          for value in values:
-             if value != "disabled":
-                    concatenated_values += value + ","
-          print(f"CreaPrompt prompt: {concatenated_values [:-1]}")
-          final_values += concatenated_values + "\n" 
-          concatenated_values = ""
-        final_values = final_values.strip()  
-        print(f"CreaPrompt Seed  : {seed}")
-        return (
+        if kwargs.get("CreaPrompt_Collection", 0) == "enabled":
+          for c in range(prompts_count):  
+            prompt_value = select_random_line_from_collection()  
+            print(f"➡️CreaPrompt prompt: {prompt_value}")  
+            final_values += prompt_value + "\n" 
+            prompt_value = ""            
+          final_values = final_values.strip()  
+          print(f"➡️CreaPrompt Seed: {seed}")
+          return (
             final_values,
             seed,
-        )
+          )            
+        else:         
+         for c in range(prompts_count):
+           for i, filename in enumerate(name_of_files):
+              if kwargs.get(filename, 0) == "🎲random":
+                     values[i] = select_random_line_from_csv_file(filename)
+              else:      
+                     values[i] = kwargs.get(filename, 0)
+                     values[i] = values[i].strip()
+           for value in values:
+              if value != "disabled":
+                     concatenated_values += value + ","
+           print(f"➡️CreaPrompt prompt: {concatenated_values [:-1]}")
+           final_values += concatenated_values + "\n" 
+           concatenated_values = ""
+         final_values = final_values.strip()  
+         print(f"➡️CreaPrompt Seed: {seed}")
+         return (
+            final_values,
+            seed,
+         )
         
 class CreaPrompt_list:
 
@@ -110,7 +131,7 @@ class CreaPrompt_list:
 
     def create_list(self, Multi_prompts, prefix="", suffix=""):
         lines = Multi_prompts.split('\n')
-        prompt_list_out = [prefix + line + suffix for line in lines]
+        prompt_list_out = [prefix + "," + line + suffix for line in lines]
         return (prompt_list_out,)       
         
 NODE_CLASS_MAPPINGS = {
