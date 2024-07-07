@@ -105,7 +105,7 @@ class CreaPrompt:
               if value != "disabled":
                      concatenated_values += value + ","
            print(f"➡️CreaPrompt prompt: {concatenated_values [:-1]}")
-           final_values += concatenated_values + "\n" 
+           final_values += concatenated_values [:-1] + "\n" 
            concatenated_values = ""
          final_values = final_values.strip()  
          print(f"➡️CreaPrompt Seed: {seed}")
@@ -123,16 +123,36 @@ class CreaPrompt_list:
                              "suffix": ("STRING", {"multiline": True, "default": ""}),
                             }
         }
-    RETURN_TYPES = ("STRING",)
-    RETURN_NAMES = ("prompt",)
+    RETURN_TYPES = ("STRING", "STRING",)
+    RETURN_NAMES = ("prompt", "prompt_debug",)
     OUTPUT_IS_LIST = (True, True, False)
     FUNCTION = "create_list"
     CATEGORY = "CreaPrompt"
 
     def create_list(self, Multi_prompts, prefix="", suffix=""):
         lines = Multi_prompts.split('\n')
-        prompt_list_out = [prefix + "," + line + suffix for line in lines]
-        return (prompt_list_out,)       
+        if prefix == "" and suffix == "":
+              prompt_list_out = lines
+        else:     
+          if prefix != "" and suffix != "":
+              prompt_list_out = [prefix + "," + line + "," + suffix for line in lines]
+          else:   
+             if prefix != "":
+              prompt_list_out = [prefix + "," + line for line in lines]
+             if suffix != "":   
+              prompt_list_out = [line + "," + suffix for line in lines]
+        if prefix == "" and suffix == "":
+              prompt_list_debug = ["➡️" + line for line in lines]
+        else:     
+          if prefix != "" and suffix != "":
+              prompt_list_debug = ["➡️" + prefix + "," + line + "," + suffix for line in lines]
+          else:   
+             if prefix != "":
+              prompt_list_debug = ["➡️" + prefix + "," + line for line in lines]
+             if suffix != "":   
+              prompt_list_debug = ["➡️" + line + "," + suffix for line in lines]              
+        debug_prompts = '\n'.join(prompt_list_debug)
+        return (prompt_list_out, debug_prompts)       
         
 NODE_CLASS_MAPPINGS = {
     "CreaPrompt": CreaPrompt, 
