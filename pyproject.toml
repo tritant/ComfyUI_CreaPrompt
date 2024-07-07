@@ -1,7 +1,7 @@
 [project]
 name = "comfyui_creaprompt"
 description = "Generate random prompts easily."
-version = "1.2.0"
+version = "1.2.1"
 license = "LICENSE"
 
 [project.urls]
