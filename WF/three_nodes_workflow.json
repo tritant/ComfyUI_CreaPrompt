@@ -1,0 +1,787 @@
+{
+  "last_node_id": 49,
+  "last_link_id": 79,
+  "nodes": [
+    {
+      "id": 12,
+      "type": "CLIPTextEncode",
+      "pos": [
+        -925,
+        -70
+      ],
+      "size": {
+        "0": 210,
+        "1": 54
+      },
+      "flags": {
+        "collapsed": false
+      },
+      "order": 8,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 17,
+          "slot_index": 0
+        },
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 38,
+          "widget": {
+            "name": "text"
+          },
+          "slot_index": 1
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            16
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CLIPTextEncode"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "shape": 2
+    },
+    {
+      "id": 8,
+      "type": "VAEDecode",
+      "pos": [
+        -930,
+        36
+      ],
+      "size": {
+        "0": 210,
+        "1": 46
+      },
+      "flags": {},
+      "order": 11,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "samples",
+          "type": "LATENT",
+          "link": 7
+        },
+        {
+          "name": "vae",
+          "type": "VAE",
+          "link": 8
+        }
+      ],
+      "outputs": [
+        {
+          "name": "IMAGE",
+          "type": "IMAGE",
+          "links": [
+            10
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "VAEDecode"
+      }
+    },
+    {
+      "id": 10,
+      "type": "PreviewImage",
+      "pos": [
+        815,
+        -139
+      ],
+      "size": {
+        "0": 1296.5584716796875,
+        "1": 1128.124755859375
+      },
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 10
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 42,
+      "type": "CreaPrompt_2",
+      "pos": [
+        -497,
+        305
+      ],
+      "size": {
+        "0": 532.3486938476562,
+        "1": 390
+      },
+      "flags": {},
+      "order": 0,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            77
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreaPrompt_2"
+      },
+      "widgets_values": [
+        "🎲random",
+        "disabled",
+        "🎲random",
+        "🎲random",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        2,
+        "disabled",
+        652385258075363,
+        "randomize"
+      ]
+    },
+    {
+      "id": 43,
+      "type": "CreaPrompt_3",
+      "pos": [
+        -504,
+        732
+      ],
+      "size": {
+        "0": 534.3486938476562,
+        "1": 366
+      },
+      "flags": {},
+      "order": 1,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            78
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreaPrompt_3"
+      },
+      "widgets_values": [
+        "🎲random",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        2,
+        "disabled",
+        513915138946109,
+        "randomize"
+      ]
+    },
+    {
+      "id": 31,
+      "type": "CreaPrompt List",
+      "pos": [
+        48,
+        778
+      ],
+      "size": {
+        "0": 741.5159912109375,
+        "1": 320.1233215332031
+      },
+      "flags": {},
+      "order": 7,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "Multi_prompts",
+          "type": "STRING",
+          "link": 79,
+          "widget": {
+            "name": "Multi_prompts"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            38
+          ],
+          "shape": 6,
+          "slot_index": 0
+        },
+        {
+          "name": "prompt_debug",
+          "type": "STRING",
+          "links": [
+            50
+          ],
+          "shape": 6,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreaPrompt List"
+      },
+      "widgets_values": [
+        "body_text",
+        "",
+        ""
+      ],
+      "color": "#232",
+      "bgcolor": "#353"
+    },
+    {
+      "id": 37,
+      "type": "ttN textDebug",
+      "pos": [
+        51,
+        409
+      ],
+      "size": {
+        "0": 741.6168823242188,
+        "1": 335.7099914550781
+      },
+      "flags": {},
+      "order": 9,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "link": 50,
+          "widget": {
+            "name": "text"
+          },
+          "slot_index": 0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "text",
+          "type": "STRING",
+          "links": null,
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "ttN textDebug",
+        "ttNnodeVersion": "1.0."
+      },
+      "widgets_values": [
+        false,
+        "",
+        "Always",
+        "",
+        "➡️a warrior woman,Short curly pixie cut,colored inner hair\n➡️a beautiful cinematic sexy female saiyan,Plant Hair,Black\n➡️a rocker man,Liquid Hair,Blond hair\n➡️a fashion man,Twintails hair,Light blond hair\n➡️Burmese Cat\n➡️Rabbit"
+      ]
+    },
+    {
+      "id": 17,
+      "type": "CLIPTextEncode",
+      "pos": [
+        52,
+        173
+      ],
+      "size": {
+        "0": 400,
+        "1": 200
+      },
+      "flags": {},
+      "order": 6,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "clip",
+          "type": "CLIP",
+          "link": 21,
+          "slot_index": 0
+        }
+      ],
+      "outputs": [
+        {
+          "name": "CONDITIONING",
+          "type": "CONDITIONING",
+          "links": [
+            22
+          ],
+          "shape": 3
+        }
+      ],
+      "title": "Negative (Prompt)",
+      "properties": {
+        "Node name for S&R": "Negative"
+      },
+      "widgets_values": [
+        ""
+      ],
+      "color": "#322",
+      "bgcolor": "#533"
+    },
+    {
+      "id": 5,
+      "type": "EmptyLatentImage",
+      "pos": [
+        465,
+        262
+      ],
+      "size": {
+        "0": 325.0981750488281,
+        "1": 107.77747344970703
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            13
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "EmptyLatentImage"
+      },
+      "widgets_values": [
+        904,
+        1200,
+        1
+      ]
+    },
+    {
+      "id": 3,
+      "type": "KSampler",
+      "pos": [
+        469,
+        -11
+      ],
+      "size": {
+        "0": 324.9972839355469,
+        "1": 234
+      },
+      "flags": {},
+      "order": 10,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "model",
+          "type": "MODEL",
+          "link": 1
+        },
+        {
+          "name": "positive",
+          "type": "CONDITIONING",
+          "link": 16,
+          "slot_index": 1
+        },
+        {
+          "name": "negative",
+          "type": "CONDITIONING",
+          "link": 22,
+          "slot_index": 2
+        },
+        {
+          "name": "latent_image",
+          "type": "LATENT",
+          "link": 13
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "link": 55,
+          "widget": {
+            "name": "seed"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "LATENT",
+          "type": "LATENT",
+          "links": [
+            7
+          ],
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "KSampler"
+      },
+      "widgets_values": [
+        1052915114607005,
+        "randomize",
+        10,
+        2.5,
+        "euler",
+        "normal",
+        1
+      ]
+    },
+    {
+      "id": 49,
+      "type": "Text Concatenate",
+      "pos": [
+        54,
+        -170
+      ],
+      "size": [
+        391.26797784634346,
+        142
+      ],
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "text_a",
+          "type": "STRING",
+          "link": 76,
+          "widget": {
+            "name": "text_a"
+          }
+        },
+        {
+          "name": "text_b",
+          "type": "STRING",
+          "link": 77,
+          "widget": {
+            "name": "text_b"
+          }
+        },
+        {
+          "name": "text_c",
+          "type": "STRING",
+          "link": 78,
+          "widget": {
+            "name": "text_c"
+          }
+        },
+        {
+          "name": "text_d",
+          "type": "STRING",
+          "link": null,
+          "widget": {
+            "name": "text_d"
+          }
+        }
+      ],
+      "outputs": [
+        {
+          "name": "STRING",
+          "type": "STRING",
+          "links": [
+            79
+          ],
+          "shape": 3,
+          "slot_index": 0
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "Text Concatenate"
+      },
+      "widgets_values": [
+        "\\n",
+        "false",
+        "",
+        "",
+        "",
+        ""
+      ]
+    },
+    {
+      "id": 41,
+      "type": "CreaPrompt_1",
+      "pos": [
+        -498,
+        -189
+      ],
+      "size": {
+        "0": 529.3843383789062,
+        "1": 462
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            76
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "links": [
+            55
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreaPrompt_1"
+      },
+      "widgets_values": [
+        "🎲random",
+        "disabled",
+        "🎲random",
+        "🎲random",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        2,
+        "disabled",
+        367447208553447,
+        "randomize"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        54,
+        10
+      ],
+      "size": {
+        "0": 397.66119384765625,
+        "1": 127.6492919921875
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            17,
+            21
+          ],
+          "slot_index": 1
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            8
+          ],
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "CreaPrompt_Ultimate4.safetensors"
+      ]
+    }
+  ],
+  "links": [
+    [
+      1,
+      4,
+      0,
+      3,
+      0,
+      "MODEL"
+    ],
+    [
+      7,
+      3,
+      0,
+      8,
+      0,
+      "LATENT"
+    ],
+    [
+      8,
+      4,
+      2,
+      8,
+      1,
+      "VAE"
+    ],
+    [
+      10,
+      8,
+      0,
+      10,
+      0,
+      "IMAGE"
+    ],
+    [
+      13,
+      5,
+      0,
+      3,
+      3,
+      "LATENT"
+    ],
+    [
+      16,
+      12,
+      0,
+      3,
+      1,
+      "CONDITIONING"
+    ],
+    [
+      17,
+      4,
+      1,
+      12,
+      0,
+      "CLIP"
+    ],
+    [
+      21,
+      4,
+      1,
+      17,
+      0,
+      "CLIP"
+    ],
+    [
+      22,
+      17,
+      0,
+      3,
+      2,
+      "CONDITIONING"
+    ],
+    [
+      38,
+      31,
+      0,
+      12,
+      1,
+      "STRING"
+    ],
+    [
+      50,
+      31,
+      1,
+      37,
+      0,
+      "STRING"
+    ],
+    [
+      55,
+      41,
+      1,
+      3,
+      4,
+      "INT"
+    ],
+    [
+      76,
+      41,
+      0,
+      49,
+      0,
+      "STRING"
+    ],
+    [
+      77,
+      42,
+      0,
+      49,
+      1,
+      "STRING"
+    ],
+    [
+      78,
+      43,
+      0,
+      49,
+      2,
+      "STRING"
+    ],
+    [
+      79,
+      49,
+      0,
+      31,
+      0,
+      "STRING"
+    ]
+  ],
+  "groups": [],
+  "config": {},
+  "extra": {
+    "ds": {
+      "scale": 0.6588450000000003,
+      "offset": {
+        "0": 685.4987427024953,
+        "1": 243.34921011799014
+      }
+    }
+  },
+  "version": 0.4
+}
