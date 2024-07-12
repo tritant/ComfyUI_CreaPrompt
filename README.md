@@ -20,7 +20,9 @@ With multi nodes, you can use up to 4 nodes at the same time, with a different c
 
 To configure the nodes, simply add/delete the categories (.csv files) in the corresponding folders (csv1, csv2, csv3).
 
-Do not delete the collection.txt file, otherwise you will get an error
+Do not delete the collection.txt file, otherwise you will get an error.
+
+The WF examples are in the WF folder of the custom node.
 
 ![Capture d'écran 2024-07-12 153624](https://github.com/user-attachments/assets/b62426a0-c512-4cec-9eee-ae6e311c9960)
 
