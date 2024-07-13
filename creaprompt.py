@@ -24,11 +24,11 @@ def select_random_line_from_collection():
       readline = random.choice(lines).strip()
       return readline
     
-def select_random_line_from_csv_file(file):
+def select_random_line_from_csv_file(file, folder):
     chosen_lines = []
-    for filename in os.listdir(folder_path):
+    for filename in os.listdir(folder):
         if filename.endswith(".csv") and filename[3:-4] == file:
-            file_path = os.path.join(folder_path, filename)
+            file_path = os.path.join(folder, filename)
             with open(file_path, 'r', encoding='utf-8') as file:
                 lines = file.readlines()
                 if lines:
@@ -101,7 +101,7 @@ class CreaPrompt:
          for c in range(prompts_count):
            for i, filename in enumerate(name_of_files):
               if kwargs.get(filename, 0) == "🎲random":
-                     values[i] = select_random_line_from_csv_file(filename)
+                     values[i] = select_random_line_from_csv_file(filename, folder_path)
               else:      
                      values[i] = kwargs.get(filename, 0)
                      values[i] = values[i].strip()
@@ -181,7 +181,7 @@ class CreaPrompt_1:
          for c in range(prompts_count):
            for i, filename in enumerate(name_of_files):
               if kwargs.get(filename, 0) == "🎲random":
-                     values[i] = select_random_line_from_csv_file(filename)
+                     values[i] = select_random_line_from_csv_file(filename, folder_path_1)
               else:      
                      values[i] = kwargs.get(filename, 0)
                      values[i] = values[i].strip()
@@ -261,7 +261,7 @@ class CreaPrompt_2:
          for c in range(prompts_count):
            for i, filename in enumerate(name_of_files):
               if kwargs.get(filename, 0) == "🎲random":
-                     values[i] = select_random_line_from_csv_file(filename)
+                     values[i] = select_random_line_from_csv_file(filename, folder_path_2)
               else:      
                      values[i] = kwargs.get(filename, 0)
                      values[i] = values[i].strip()
@@ -341,7 +341,7 @@ class CreaPrompt_3:
          for c in range(prompts_count):
            for i, filename in enumerate(name_of_files):
               if kwargs.get(filename, 0) == "🎲random":
-                     values[i] = select_random_line_from_csv_file(filename)
+                     values[i] = select_random_line_from_csv_file(filename, folder_path_3)
               else:      
                      values[i] = kwargs.get(filename, 0)
                      values[i] = values[i].strip()
