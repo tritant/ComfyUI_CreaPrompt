@@ -141,7 +141,7 @@
         "disabled",
         2,
         "disabled",
-        700202534229276,
+        383970999148062,
         "randomize"
       ]
     },
@@ -191,7 +191,7 @@
         "disabled",
         2,
         "disabled",
-        538492223258090,
+        514388637395857,
         "randomize"
       ]
     },
@@ -293,7 +293,7 @@
         "",
         "Always",
         "",
-        "➡️a fashion woman,Updo hair,colored tips\n➡️a warrior woman,Loose Curly Afro hair,Redhead\n➡️A solitary man with a thoughtful expression,Hair ringlets,Jet black\n➡️a biker man,Twin braids,Silver\n➡️Bee\n➡️Bengal Cat"
+        "➡️a gorgeous hulking beast of a woman with very long hip-length blonde hair wearing a cut-off white top and orange cut-off shorts,Spiky hair,Light brown hair\n➡️a muscular woman,Short curly pixie cut,Lightest blond hair\n➡️A muscular man,Twintails hair,Caramel\n➡️A modern man,Side braid,Chestnut\n➡️Bobcat\n➡️Donkey"
       ]
     },
     {
@@ -431,7 +431,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        341492492979602,
+        77343068452455,
         "randomize",
         10,
         2.5,
@@ -560,6 +560,31 @@
       ]
     },
     {
+      "id": 10,
+      "type": "PreviewImage",
+      "pos": [
+        815,
+        -139
+      ],
+      "size": {
+        "0": 1296.5584716796875,
+        "1": 1128.124755859375
+      },
+      "flags": {},
+      "order": 12,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 10
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
       "id": 41,
       "type": "CreaPrompt_1",
       "pos": [
@@ -611,34 +636,9 @@
         "disabled",
         2,
         "disabled",
-        0,
-        367447208553447
+        815633624565370,
+        "randomize"
       ]
-    },
-    {
-      "id": 10,
-      "type": "PreviewImage",
-      "pos": [
-        815,
-        -139
-      ],
-      "size": {
-        "0": 1296.5584716796875,
-        "1": 1128.124755859375
-      },
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 10
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      }
     }
   ],
   "links": [
@@ -775,10 +775,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.6588450000000003,
+      "scale": 0.7247295000000004,
       "offset": {
-        "0": 875.1067783313525,
-        "1": 264.1992594748442
+        "0": 608.2766481140994,
+        "1": 175.69188417776073
       }
     }
   },

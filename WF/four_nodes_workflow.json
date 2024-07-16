@@ -48,7 +48,7 @@
         "disabled",
         2,
         "disabled",
-        112118539433463,
+        895284497039699,
         "randomize"
       ]
     },
@@ -150,7 +150,7 @@
         "",
         "Always",
         "",
-        "➡️a Gorgeous woman,Hair ringlets,colored inner hair\n➡️a captivating image of a beautiful woman,Tomboy Cut,Chestnut\n➡️A solitary man with a thoughtful expression,Long hair with bangs,Maroon\n➡️An enigmatic man, with a mysterious tattoo and a profound gaze,Plant Hair,Light brown hair\n➡️Salamander\n➡️-color- dragon\n➡️dressed in a velvet capelet over a beaded dress with T-strap heels\n➡️dressed in a plaid skirt with a ripped tee and leather jacket"
+        "➡️a girl pixie hair shaved hair,Short curly pixie cut,rainbow hair\n➡️a fitness woman,Wavy hair,Honey\n➡️A mysterious man,Shoulder length straight hair,Blond\n➡️A creative man,Buzz cut,split-color hair\n➡️Pterodactyl\n➡️Caterpillar\n➡️Outerwear Trench coat in a classic beige with a double-breasted closure\n➡️dressed in a oversized sweater with leg warmers and sneakers"
       ]
     },
     {
@@ -288,7 +288,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        632288208500295,
+        600095151124463,
         "randomize",
         10,
         2.5,
@@ -555,7 +555,7 @@
         "disabled",
         2,
         "disabled",
-        285427569233923,
+        412640540960406,
         "randomize"
       ]
     },
@@ -585,6 +585,62 @@
       }
     },
     {
+      "id": 41,
+      "type": "CreaPrompt_1",
+      "pos": [
+        -498,
+        -186
+      ],
+      "size": {
+        "0": 529.3843383789062,
+        "1": 462
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            76
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "links": [
+            55
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreaPrompt_1"
+      },
+      "widgets_values": [
+        "🎲random",
+        "disabled",
+        "🎲random",
+        "🎲random",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        2,
+        "disabled",
+        0,
+        1099260294276912
+      ]
+    },
+    {
       "id": 50,
       "type": "CreaPrompt",
       "pos": [
@@ -596,7 +652,7 @@
         "1": 1158
       },
       "flags": {},
-      "order": 4,
+      "order": 5,
       "mode": 0,
       "outputs": [
         {
@@ -662,65 +718,9 @@
         "disabled",
         "disabled",
         2,
-        249117675083072,
-        1053555432929287,
+        "disabled",
+        39955027625595,
         "randomize"
-      ]
-    },
-    {
-      "id": 41,
-      "type": "CreaPrompt_1",
-      "pos": [
-        -498,
-        -186
-      ],
-      "size": {
-        "0": 529.3843383789062,
-        "1": 462
-      },
-      "flags": {},
-      "order": 5,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "prompt",
-          "type": "STRING",
-          "links": [
-            76
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "seed",
-          "type": "INT",
-          "links": [
-            55
-          ],
-          "shape": 3,
-          "slot_index": 1
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CreaPrompt_1"
-      },
-      "widgets_values": [
-        "🎲random",
-        "disabled",
-        "🎲random",
-        "🎲random",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        2,
-        "disabled",
-        0,
-        1099260294276912
       ]
     }
   ],
@@ -866,10 +866,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.5989500000000003,
+      "scale": 0.6588450000000003,
       "offset": {
-        "0": 1080.065860502996,
-        "1": 308.017269028246
+        "0": 1405.9850020861743,
+        "1": 233.905944907721
       }
     }
   },
