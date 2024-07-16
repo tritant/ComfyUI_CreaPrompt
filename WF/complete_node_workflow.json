@@ -229,7 +229,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        461106055566890,
+        386893531188224,
         "randomize",
         10,
         2.5,
@@ -245,10 +245,10 @@
         54,
         -170
       ],
-      "size": [
-        391.26797784634346,
-        142
-      ],
+      "size": {
+        "0": 391.2679748535156,
+        "1": 142
+      },
       "flags": {},
       "order": 4,
       "mode": 0,
@@ -455,7 +455,7 @@
         "",
         "Always",
         "",
-        "➡️An adventurous man,a angry woman\n➡️An adventurous man,a beautiful mysterious woman drenched clothing long hair\n➡️A stylish man,a beautiful cinematic sexy female saiyan"
+        "➡️A charismatic man, with natural charm,Pretty eyes,beautiful sexy woman with freckles,big breast\n➡️A stylish man,a woman with sexy pose"
       ]
     },
     {
@@ -465,10 +465,10 @@
         -605,
         -170
       ],
-      "size": [
-        620.7284048056435,
-        1178.8421247179722
-      ],
+      "size": {
+        "0": 620.7283935546875,
+        "1": 1178.8421630859375
+      },
       "flags": {},
       "order": 2,
       "mode": 0,
@@ -537,9 +537,10 @@
         "disabled",
         "disabled",
         "disabled",
-        3,
         "disabled",
-        1080596684259990,
+        2,
+        "disabled",
+        616497410987864,
         "randomize"
       ]
     },
@@ -687,10 +688,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.6588450000000003,
+      "scale": 0.5445000000000001,
       "offset": {
-        "0": 685.4987427024953,
-        "1": 243.34921011799014
+        "0": 979.7694326633708,
+        "1": 426.4270619233884
       }
     }
   },

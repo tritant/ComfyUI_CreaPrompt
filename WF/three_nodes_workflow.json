@@ -95,31 +95,6 @@
       }
     },
     {
-      "id": 10,
-      "type": "PreviewImage",
-      "pos": [
-        815,
-        -139
-      ],
-      "size": {
-        "0": 1296.5584716796875,
-        "1": 1128.124755859375
-      },
-      "flags": {},
-      "order": 12,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 10
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      }
-    },
-    {
       "id": 42,
       "type": "CreaPrompt_2",
       "pos": [
@@ -166,7 +141,7 @@
         "disabled",
         2,
         "disabled",
-        652385258075363,
+        700202534229276,
         "randomize"
       ]
     },
@@ -216,7 +191,7 @@
         "disabled",
         2,
         "disabled",
-        513915138946109,
+        538492223258090,
         "randomize"
       ]
     },
@@ -318,7 +293,7 @@
         "",
         "Always",
         "",
-        "➡️a warrior woman,Short curly pixie cut,colored inner hair\n➡️a beautiful cinematic sexy female saiyan,Plant Hair,Black\n➡️a rocker man,Liquid Hair,Blond hair\n➡️a fashion man,Twintails hair,Light blond hair\n➡️Burmese Cat\n➡️Rabbit"
+        "➡️a fashion woman,Updo hair,colored tips\n➡️a warrior woman,Loose Curly Afro hair,Redhead\n➡️A solitary man with a thoughtful expression,Hair ringlets,Jet black\n➡️a biker man,Twin braids,Silver\n➡️Bee\n➡️Bengal Cat"
       ]
     },
     {
@@ -333,7 +308,7 @@
         "1": 200
       },
       "flags": {},
-      "order": 6,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
@@ -456,7 +431,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        1052915114607005,
+        341492492979602,
         "randomize",
         10,
         2.5,
@@ -472,12 +447,12 @@
         54,
         -170
       ],
-      "size": [
-        391.26797784634346,
-        142
-      ],
+      "size": {
+        "0": 391.2679748535156,
+        "1": 142
+      },
       "flags": {},
-      "order": 5,
+      "order": 6,
       "mode": 0,
       "inputs": [
         {
@@ -537,6 +512,54 @@
       ]
     },
     {
+      "id": 4,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        54,
+        10
+      ],
+      "size": {
+        "0": 397.66119384765625,
+        "1": 127.6492919921875
+      },
+      "flags": {},
+      "order": 3,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            17,
+            21
+          ],
+          "slot_index": 1
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            8
+          ],
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "CreaPrompt_Ultimate4.safetensors"
+      ]
+    },
+    {
       "id": 41,
       "type": "CreaPrompt_1",
       "pos": [
@@ -548,7 +571,7 @@
         "1": 462
       },
       "flags": {},
-      "order": 3,
+      "order": 4,
       "mode": 0,
       "outputs": [
         {
@@ -586,60 +609,36 @@
         "disabled",
         "disabled",
         "disabled",
-        "disabled",
         2,
         "disabled",
-        367447208553447,
-        "randomize"
+        0,
+        367447208553447
       ]
     },
     {
-      "id": 4,
-      "type": "CheckpointLoaderSimple",
+      "id": 10,
+      "type": "PreviewImage",
       "pos": [
-        54,
-        10
+        815,
+        -139
       ],
       "size": {
-        "0": 397.66119384765625,
-        "1": 127.6492919921875
+        "0": 1296.5584716796875,
+        "1": 1128.124755859375
       },
       "flags": {},
-      "order": 4,
+      "order": 12,
       "mode": 0,
-      "outputs": [
+      "inputs": [
         {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [
-            1
-          ],
-          "slot_index": 0
-        },
-        {
-          "name": "CLIP",
-          "type": "CLIP",
-          "links": [
-            17,
-            21
-          ],
-          "slot_index": 1
-        },
-        {
-          "name": "VAE",
-          "type": "VAE",
-          "links": [
-            8
-          ],
-          "slot_index": 2
+          "name": "images",
+          "type": "IMAGE",
+          "link": 10
         }
       ],
       "properties": {
-        "Node name for S&R": "CheckpointLoaderSimple"
-      },
-      "widgets_values": [
-        "CreaPrompt_Ultimate4.safetensors"
-      ]
+        "Node name for S&R": "PreviewImage"
+      }
     }
   ],
   "links": [
@@ -778,8 +777,8 @@
     "ds": {
       "scale": 0.6588450000000003,
       "offset": {
-        "0": 685.4987427024953,
-        "1": 243.34921011799014
+        "0": 875.1067783313525,
+        "1": 264.1992594748442
       }
     }
   },

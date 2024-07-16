@@ -192,7 +192,7 @@
         "",
         "Always",
         "",
-        "➡️a voluptuous woman,Buzz cut,Platinium blond hair\n➡️a beautiful mysterious woman drenched clothing long hair,Wavy hair,White"
+        "➡️a beautiful cute red haired joyful and playful 29 year old maiden standing up in casual green clothing long hair athletic body,Buzz cut,Grey\n➡️a warrior woman,Curly bob,rainbow hair"
       ]
     },
     {
@@ -330,7 +330,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        578986338995802,
+        227117822426262,
         "randomize",
         10,
         2.5,
@@ -346,10 +346,10 @@
         54,
         -170
       ],
-      "size": [
-        391.26797784634346,
-        142
-      ],
+      "size": {
+        "0": 391.2679748535156,
+        "1": 142
+      },
       "flags": {},
       "order": 4,
       "mode": 0,
@@ -533,11 +533,10 @@
         "disabled",
         "disabled",
         "disabled",
-        "disabled",
         2,
         "disabled",
-        453507302412012,
-        "randomize"
+        0,
+        453507302412012
       ]
     }
   ],
@@ -659,10 +658,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.6588450000000003,
+      "scale": 0.7247295000000004,
       "offset": {
-        "0": 685.4987427024953,
-        "1": 243.34921011799014
+        "0": 615.3415689155917,
+        "1": 295.6406486834057
       }
     }
   },

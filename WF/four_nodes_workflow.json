@@ -48,7 +48,7 @@
         "disabled",
         2,
         "disabled",
-        673864650237197,
+        112118539433463,
         "randomize"
       ]
     },
@@ -150,7 +150,7 @@
         "",
         "Always",
         "",
-        "➡️a fitness girl,Bob haircut,Light blond hair\n➡️a beautiful cinematic sexy female,Spiky hair,split-color hair\n➡️a expressive man,Crystal Hair,Honey\n➡️a charismatic man,Loose Curly Afro hair,Dark gray hair\n➡️Rabbit\n➡️Bear\n➡️bauhaus architecture, intricate, elegant, highly detailed, centered, digital painting, artstation, concept art, smooth, sharp focus, illustration, artgerm, tomasz alen kopera, peter mohrbacher, donato giancola, joseph christian leyendecker, wlop, boris vallejo\n➡️a soldier in a trench is resting after a fight,dirty clothes,dirty shoes,dirty face,dirty hands,torn sleeve,a machine gun is lying on the ground,tired face,smoke"
+        "➡️a Gorgeous woman,Hair ringlets,colored inner hair\n➡️a captivating image of a beautiful woman,Tomboy Cut,Chestnut\n➡️A solitary man with a thoughtful expression,Long hair with bangs,Maroon\n➡️An enigmatic man, with a mysterious tattoo and a profound gaze,Plant Hair,Light brown hair\n➡️Salamander\n➡️-color- dragon\n➡️dressed in a velvet capelet over a beaded dress with T-strap heels\n➡️dressed in a plaid skirt with a ripped tee and leather jacket"
       ]
     },
     {
@@ -288,7 +288,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        781989664091548,
+        632288208500295,
         "randomize",
         10,
         2.5,
@@ -509,88 +509,6 @@
       "shape": 2
     },
     {
-      "id": 50,
-      "type": "CreaPrompt",
-      "pos": [
-        -1061,
-        -182
-      ],
-      "size": [
-        539.4890943356228,
-        1134
-      ],
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "prompt",
-          "type": "STRING",
-          "links": [
-            80
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "seed",
-          "type": "INT",
-          "links": null,
-          "shape": 3
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CreaPrompt"
-      },
-      "widgets_values": [
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        2,
-        "enabled",
-        249117675083072,
-        "randomize"
-      ]
-    },
-    {
       "id": 42,
       "type": "CreaPrompt_2",
       "pos": [
@@ -602,7 +520,7 @@
         "1": 390
       },
       "flags": {},
-      "order": 4,
+      "order": 3,
       "mode": 0,
       "outputs": [
         {
@@ -637,7 +555,115 @@
         "disabled",
         2,
         "disabled",
-        1083375292302143,
+        285427569233923,
+        "randomize"
+      ]
+    },
+    {
+      "id": 10,
+      "type": "PreviewImage",
+      "pos": [
+        815,
+        -139
+      ],
+      "size": {
+        "0": 1296.5584716796875,
+        "1": 1128.124755859375
+      },
+      "flags": {},
+      "order": 13,
+      "mode": 0,
+      "inputs": [
+        {
+          "name": "images",
+          "type": "IMAGE",
+          "link": 10
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "PreviewImage"
+      }
+    },
+    {
+      "id": 50,
+      "type": "CreaPrompt",
+      "pos": [
+        -1061,
+        -182
+      ],
+      "size": {
+        "0": 539.4890747070312,
+        "1": 1158
+      },
+      "flags": {},
+      "order": 4,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            80
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "links": null,
+          "shape": 3
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreaPrompt"
+      },
+      "widgets_values": [
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "🎲random",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        2,
+        249117675083072,
+        1053555432929287,
         "randomize"
       ]
     },
@@ -691,37 +717,11 @@
         "disabled",
         "disabled",
         "disabled",
-        "disabled",
         2,
         "disabled",
-        1099260294276912,
-        "randomize"
+        0,
+        1099260294276912
       ]
-    },
-    {
-      "id": 10,
-      "type": "PreviewImage",
-      "pos": [
-        815,
-        -139
-      ],
-      "size": {
-        "0": 1296.5584716796875,
-        "1": 1128.124755859375
-      },
-      "flags": {},
-      "order": 13,
-      "mode": 0,
-      "inputs": [
-        {
-          "name": "images",
-          "type": "IMAGE",
-          "link": 10
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "PreviewImage"
-      }
     }
   ],
   "links": [
@@ -866,10 +866,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.6588450000000003,
+      "scale": 0.5989500000000003,
       "offset": {
-        "0": 1067.9216699564422,
-        "1": 246.71120358640684
+        "0": 1080.065860502996,
+        "1": 308.017269028246
       }
     }
   },

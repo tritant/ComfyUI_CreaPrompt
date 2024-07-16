@@ -192,7 +192,7 @@
         "",
         "Always",
         "",
-        "➡️a girl with sexy pose,Very long wave hair,Platinum\n➡️a captivating image of a beautiful woman,tentacle hair,Black\n➡️a expressive man,Shoulder Length Hair with Bangs,Lightest blond hair\n➡️A creative man,Wavy hair,Blond"
+        "➡️a woman with sexy pose,Short hair,Brunette\n➡️a beautiful cute red haired joyful and playful 29 year old maiden standing up in casual green clothing long hair athletic body,Short hair,Redhead\n➡️a rocker man,Wavy French Bob Vibes from 1920’,Strawberry blond\n➡️A cultured man,Short hair,Auburn"
       ]
     },
     {
@@ -207,7 +207,7 @@
         "1": 200
       },
       "flags": {},
-      "order": 5,
+      "order": 4,
       "mode": 0,
       "inputs": [
         {
@@ -330,7 +330,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        562398321658010,
+        118361853748042,
         "randomize",
         10,
         2.5,
@@ -346,12 +346,12 @@
         54,
         -170
       ],
-      "size": [
-        391.26797784634346,
-        142
-      ],
+      "size": {
+        "0": 391.2679748535156,
+        "1": 142
+      },
       "flags": {},
-      "order": 4,
+      "order": 5,
       "mode": 0,
       "inputs": [
         {
@@ -457,8 +457,56 @@
         "disabled",
         2,
         "disabled",
-        382808611514903,
+        925289124043531,
         "randomize"
+      ]
+    },
+    {
+      "id": 4,
+      "type": "CheckpointLoaderSimple",
+      "pos": [
+        54,
+        10
+      ],
+      "size": {
+        "0": 397.66119384765625,
+        "1": 127.6492919921875
+      },
+      "flags": {},
+      "order": 2,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "MODEL",
+          "type": "MODEL",
+          "links": [
+            1
+          ],
+          "slot_index": 0
+        },
+        {
+          "name": "CLIP",
+          "type": "CLIP",
+          "links": [
+            17,
+            21
+          ],
+          "slot_index": 1
+        },
+        {
+          "name": "VAE",
+          "type": "VAE",
+          "links": [
+            8
+          ],
+          "slot_index": 2
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CheckpointLoaderSimple"
+      },
+      "widgets_values": [
+        "CreaPrompt_Ultimate5.safetensors"
       ]
     },
     {
@@ -473,7 +521,7 @@
         "1": 462
       },
       "flags": {},
-      "order": 2,
+      "order": 3,
       "mode": 0,
       "outputs": [
         {
@@ -511,59 +559,10 @@
         "disabled",
         "disabled",
         "disabled",
-        "disabled",
         2,
         "disabled",
-        933720449493466,
+        897309950949856,
         "randomize"
-      ]
-    },
-    {
-      "id": 4,
-      "type": "CheckpointLoaderSimple",
-      "pos": [
-        54,
-        10
-      ],
-      "size": {
-        "0": 397.66119384765625,
-        "1": 127.6492919921875
-      },
-      "flags": {},
-      "order": 3,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "MODEL",
-          "type": "MODEL",
-          "links": [
-            1
-          ],
-          "slot_index": 0
-        },
-        {
-          "name": "CLIP",
-          "type": "CLIP",
-          "links": [
-            17,
-            21
-          ],
-          "slot_index": 1
-        },
-        {
-          "name": "VAE",
-          "type": "VAE",
-          "links": [
-            8
-          ],
-          "slot_index": 2
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CheckpointLoaderSimple"
-      },
-      "widgets_values": [
-        "CreaPrompt_Ultimate5.safetensors"
       ]
     },
     {
@@ -718,10 +717,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.6588450000000003,
+      "scale": 0.5989500000000002,
       "offset": {
-        "0": 685.4987427024953,
-        "1": 243.34921011799014
+        "0": 800.8362996806496,
+        "1": 352.7147320127114
       }
     }
   },
