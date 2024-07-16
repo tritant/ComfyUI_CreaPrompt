@@ -48,7 +48,7 @@
         "disabled",
         2,
         "disabled",
-        895284497039699,
+        429060054290295,
         "randomize"
       ]
     },
@@ -150,7 +150,7 @@
         "",
         "Always",
         "",
-        "➡️a girl pixie hair shaved hair,Short curly pixie cut,rainbow hair\n➡️a fitness woman,Wavy hair,Honey\n➡️A mysterious man,Shoulder length straight hair,Blond\n➡️A creative man,Buzz cut,split-color hair\n➡️Pterodactyl\n➡️Caterpillar\n➡️Outerwear Trench coat in a classic beige with a double-breasted closure\n➡️dressed in a oversized sweater with leg warmers and sneakers"
+        "➡️a angry woman,Stacked Curls in Short Bob,Platinium blond hair\n➡️a muscular girl,Long hair with bangs,Platinium blond hair\n➡️A caring man,Crystal Hair,Light blond hair\n➡️A businessman, serious and focused,Loose Curly Afro hair,split-color hair\n➡️Roc\n➡️Velociraptor\n➡️dressed in a swing dress with cap sleeves and a matching belt\n➡️dressed in a floral tea dress with a peter pan collar and ankle-strap heels"
       ]
     },
     {
@@ -288,7 +288,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        600095151124463,
+        645745377428104,
         "randomize",
         10,
         2.5,
@@ -555,7 +555,7 @@
         "disabled",
         2,
         "disabled",
-        412640540960406,
+        798661371819603,
         "randomize"
       ]
     },
@@ -585,62 +585,6 @@
       }
     },
     {
-      "id": 41,
-      "type": "CreaPrompt_1",
-      "pos": [
-        -498,
-        -186
-      ],
-      "size": {
-        "0": 529.3843383789062,
-        "1": 462
-      },
-      "flags": {},
-      "order": 4,
-      "mode": 0,
-      "outputs": [
-        {
-          "name": "prompt",
-          "type": "STRING",
-          "links": [
-            76
-          ],
-          "shape": 3,
-          "slot_index": 0
-        },
-        {
-          "name": "seed",
-          "type": "INT",
-          "links": [
-            55
-          ],
-          "shape": 3,
-          "slot_index": 1
-        }
-      ],
-      "properties": {
-        "Node name for S&R": "CreaPrompt_1"
-      },
-      "widgets_values": [
-        "🎲random",
-        "disabled",
-        "🎲random",
-        "🎲random",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        "disabled",
-        2,
-        "disabled",
-        0,
-        1099260294276912
-      ]
-    },
-    {
       "id": 50,
       "type": "CreaPrompt",
       "pos": [
@@ -652,7 +596,7 @@
         "1": 1158
       },
       "flags": {},
-      "order": 5,
+      "order": 4,
       "mode": 0,
       "outputs": [
         {
@@ -719,7 +663,63 @@
         "disabled",
         2,
         "disabled",
-        39955027625595,
+        50866007804338,
+        "randomize"
+      ]
+    },
+    {
+      "id": 41,
+      "type": "CreaPrompt_1",
+      "pos": [
+        -498,
+        -186
+      ],
+      "size": {
+        "0": 529.3843383789062,
+        "1": 462
+      },
+      "flags": {},
+      "order": 5,
+      "mode": 0,
+      "outputs": [
+        {
+          "name": "prompt",
+          "type": "STRING",
+          "links": [
+            76
+          ],
+          "shape": 3,
+          "slot_index": 0
+        },
+        {
+          "name": "seed",
+          "type": "INT",
+          "links": [
+            55
+          ],
+          "shape": 3,
+          "slot_index": 1
+        }
+      ],
+      "properties": {
+        "Node name for S&R": "CreaPrompt_1"
+      },
+      "widgets_values": [
+        "🎲random",
+        "disabled",
+        "🎲random",
+        "🎲random",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        "disabled",
+        2,
+        "disabled",
+        0,
         "randomize"
       ]
     }
@@ -866,10 +866,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.6588450000000003,
+      "scale": 0.6588450000000002,
       "offset": {
-        "0": 1405.9850020861743,
-        "1": 233.905944907721
+        "0": 1137.2603651652869,
+        "1": 241.72725754919577
       }
     }
   },

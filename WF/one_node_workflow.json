@@ -192,7 +192,7 @@
         "",
         "Always",
         "",
-        "➡️a beautiful cute red haired joyful and playful 29 year old maiden standing up in casual green clothing long hair athletic body,Buzz cut,Grey\n➡️a warrior woman,Curly bob,rainbow hair"
+        "➡️a warrior woman,Buzz cut,Redhead\n➡️a gorgeous hulking beast of a woman with very long hip-length blonde hair wearing a cut-off white top and orange cut-off shorts,living hair,Maroon"
       ]
     },
     {
@@ -330,7 +330,7 @@
         "Node name for S&R": "KSampler"
       },
       "widgets_values": [
-        227117822426262,
+        553427546643802,
         "randomize",
         10,
         2.5,
@@ -535,8 +535,8 @@
         "disabled",
         2,
         "disabled",
-        0,
-        453507302412012
+        280728054440939,
+        "randomize"
       ]
     }
   ],
@@ -658,10 +658,10 @@
   "config": {},
   "extra": {
     "ds": {
-      "scale": 0.7247295000000004,
+      "scale": 0.8769226950000005,
       "offset": {
-        "0": 615.3415689155917,
-        "1": 295.6406486834057
+        "0": 726.9664124258854,
+        "1": 250.90667712163705
       }
     }
   },
