@@ -26,5 +26,12 @@ The WF examples are in the WF folder of the custom node.
 
 ![Capture d'écran 2024-07-12 153624](https://github.com/user-attachments/assets/b62426a0-c512-4cec-9eee-ae6e311c9960)
 
+# Weight Node
+
+Configure it in csv+weight folder
+
+![Capture d'écran 2024-07-17 083300](https://github.com/user-attachments/assets/96659a20-7424-492e-9ed8-cfab37c73eb1)
+
+
 
 
