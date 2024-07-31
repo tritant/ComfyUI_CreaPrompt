@@ -2,7 +2,7 @@
 name = "comfyui_creaprompt"
 description = "Generate random prompts easily."
 version = "1.4.0"
-license = "LICENSE"
+license = { file = "LICENSE" }
 
 [project.urls]
 Repository = "https://github.com/tritant/ComfyUI_CreaPrompt"
