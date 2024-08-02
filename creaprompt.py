@@ -4,7 +4,6 @@ import json
 import os
 
 script_directory = os.path.dirname(__file__)
-os.chdir(script_directory)
 folder_path = os.path.join(script_directory, "csv" )
 folder_path_1 = os.path.join(script_directory, "csv1" )
 folder_path_2 = os.path.join(script_directory, "csv2" )
