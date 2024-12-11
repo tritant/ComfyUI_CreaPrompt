@@ -56,7 +56,7 @@ class CreaPrompt:
         self.rng = random.Random(seed)
 
     @classmethod
-    def IS_CHANGED(cls):
+    def IS_CHANGED(self, **kwargs):
         return float("NaN")
 
     @classmethod
@@ -136,7 +136,7 @@ class CreaPrompt_1:
         self.rng = random.Random(seed)
 
     @classmethod
-    def IS_CHANGED(cls):
+    def IS_CHANGED(self, **kwargs):
         return float("NaN")
 
     @classmethod
@@ -216,7 +216,7 @@ class CreaPrompt_2:
         self.rng = random.Random(seed)
 
     @classmethod
-    def IS_CHANGED(cls):
+    def IS_CHANGED(self, **kwargs):
         return float("NaN")
 
     @classmethod
@@ -296,7 +296,7 @@ class CreaPrompt_3:
         self.rng = random.Random(seed)
 
     @classmethod
-    def IS_CHANGED(cls):
+    def IS_CHANGED(self, **kwargs):
         return float("NaN")
 
     @classmethod
@@ -376,7 +376,7 @@ class CreaPrompt_4:
         self.rng = random.Random(seed)
 
     @classmethod
-    def IS_CHANGED(cls):
+    def IS_CHANGED(self, **kwargs):
         return float("NaN")
 
     @classmethod
