@@ -32,6 +32,15 @@ Configure it in csv+weight folder
 
 ![Capture d'écran 2024-07-17 083300](https://github.com/user-attachments/assets/96659a20-7424-492e-9ed8-cfab37c73eb1)
 
+# Dynamic Node
+
+The Add a Category button use the CSV folder to choose your categories
+
+You can change the default config (Add/reload/recreate node) in default_combos.txt file
+
+![Capture d'écran 2025-06-04 122933](https://github.com/user-attachments/assets/d86f6462-f05b-438a-affa-ace16c15aea8)
+
+
 
 
 
