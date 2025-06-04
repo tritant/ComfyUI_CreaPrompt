@@ -1,0 +1,10 @@
+{
+  "Woman": "🎲random",
+  "Haircuts_Thomas_Buyle": "🎲random",
+  "Haircolors_Thomas_Buyle": "🎲random",
+  "Woman_Dress_Malapris_PJ": "🎲random",
+  "Places": "🎲random",
+  "Image_Quality": "🎲random",
+  "Cameras": "🎲random",
+  "Lighting": "🎲random"
+}
