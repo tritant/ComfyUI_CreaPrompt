@@ -1,0 +1,12 @@
+{
+  "Retro_woman_Lololerigolo": "🎲random",
+  "Strange place_Lololerigolo": "🎲random",
+  "Superheros_Lololerigolo": "disabled",
+  "Strange building_Lololerigolo": "disabled",
+  "Furnitures_tables_Lololerigolo": "disabled",
+  "Furnitures_cabinets_Lololerigolo": "disabled",
+  "Visual_effects_Lololerigolo": "🎲random",
+  "Image_Quality": "🎲random",
+  "Cameras": "🎲random",
+  "Lighting": "🎲random"
+}
