@@ -1,0 +1,5 @@
+{
+  "Kontext_Transform_Woman": "🎲random",
+  "Kontext_change_background": "🎲random",
+  "Kontext_Transform_Man": "disabled"
+}
