@@ -11,7 +11,6 @@ if (!window._crea_prompt_first_boot_done) {
     window.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {
             window._crea_prompt_is_refresh = false;
-            //console.log("🧭 Fin période de refresh (isRefresh = false)");
         }, 2000);
     });
 }
@@ -30,69 +29,35 @@ app.registerExtension({
             const node = this;
             let clickX = 100;
             let clickY = 100;
-
+            
             const jsonWidget = node.widgets.find(w => w.name === "__csv_json");
-            const jsonIndex = node.widgets.indexOf(jsonWidget);
 
+            // --- SOLUTION FINALE : FUSION DES DEUX TECHNIQUES ---
+            if (jsonWidget) {
+                // 1. On dit au CANVAS de supprimer l'espace alloué au widget.
+                jsonWidget.computeSize = () => [0, -4]; // Le -4 est important pour la marge.
+
+                // 2. On dit au navigateur de masquer l'élément HTML pour supprimer les bordures.
+                setTimeout(() => {
+                    if (jsonWidget.inputEl && jsonWidget.inputEl.parentElement) {
+                        jsonWidget.inputEl.parentElement.style.display = "none";
+                    }
+                }, 0);
+            }
+            
             function updateCsvJson() {
                 const jsonText = JSON.stringify(node._crea_dynamicValues);
-                if (node.widgets_values) node.widgets_values[jsonIndex] = jsonText;
-                node.widgets[jsonIndex].value = jsonText;
+                if (jsonWidget) {
+                    jsonWidget.value = jsonText;
+                }
                 node.graph?.setDirtyCanvas(true, true);
             }
 
             node._crea_updateCsvJson = updateCsvJson;
-            node._crea_jsonIndex = jsonIndex;
             node._crea_dynamicValues = {};
-
-            for (const w of node.widgets) {
-                if (w.name === "__csv_json") {
-                    console.log("🔒 Widget __csv_json trouvé dans node.widgets");
-                    w.readonly = true;
-                    w.disabled = true;
-                    if (w.options) {
-                        w.options.readonly = true;
-                        w.options.disabled = true;
-                        w.options.hidden = true;
-                    }
-
-                    // 🔬 Diagnostic avancé : afficher tous les input et textarea avec leurs noms
-                    console.log("🔬 Diagnostic : recherche manuelle de tous les input et textarea");
-                    document.querySelectorAll("input, textarea").forEach((el, i) => {
-                        console.log(`#${i}`, el.tagName, el.name, el.value, el);
-                    });
-
-                    // ✅ Masquage par détection du contenu JSON probable (avec retry même si vide au début)
-                    let attempt = 0;
-                    const hideByTextContent = () => {
-                        const textareas = document.querySelectorAll("textarea");
-                        for (const t of textareas) {
-                            const val = t.value.trim();
-                            const wrapper = t.closest("div");
-                            if (val.startsWith("{") && val.includes(":") && wrapper) {
-                                wrapper.style.display = "none";
-                                wrapper.style.visibility = "hidden";
-                                wrapper.style.height = "0px";
-                                wrapper.style.padding = "0";
-                                wrapper.style.margin = "0";
-								console.log("🧼 Widget __csv_json masqué par analyse de contenu (tentative", attempt, ")");
-                                return;
-                            }
-                        }
-                        if (attempt < 50) {
-                            attempt++;
-                            requestAnimationFrame(hideByTextContent);
-                        } else {
-                            console.warn("⏳ Abandon du masquage de __csv_json après 50 tentatives.");
-                        }
-                    };
-                    setTimeout(() => hideByTextContent(), 100);
-
-                    break;
-                }
-            }
-
-
+            
+            // Le reste de votre code est inchangé.
+            
             // 💾 Preset Name + Save Preset
             if (!node._crea_savePresetAdded) {
                 node._crea_savePresetAdded = true;
@@ -119,11 +84,10 @@ app.registerExtension({
                     }
                 }, { serialize: false });
             }
-			
+            
             // 📂 Load Preset
             node.addWidget("button", "📂 Load Categories Preset", "", async () => {
                 try {
-                    // 🔄 Fermer l'ancien menu s'il existe
                     if (node._crea_presetMenu) {
                         node._crea_presetMenu.remove();
                         node._crea_presetMenu = null;
@@ -154,7 +118,6 @@ app.registerExtension({
                         zIndex: 9999
                     });
 
-                    // ❌ Bouton pour fermer le menu
                     const closeItem = document.createElement("div");
                     closeItem.innerText = "❌ Close menu";
                     closeItem.style.padding = "4px";
@@ -179,7 +142,6 @@ app.registerExtension({
                             try {
                                 const parsed = JSON.parse(content);
 
-                                // 🧼 Supprimer tous les widgets combo existants
                                 const existingLabels = Object.keys(node._crea_dynamicValues || {});
                                 for (const name of existingLabels) {
                                     const widgetsToRemove = node.widgets.filter(w => w.name === name);
@@ -226,7 +188,6 @@ app.registerExtension({
                                 node._crea_updateCsvJson?.();
                                 node.widgets_changed = true;
                                 node.onResize?.();
-                                //alert(`✅ Preset "${label}" chargé.`);
                             } catch (e) {
                                 alert("❌ Error when loading : " + e.message);
                             }
@@ -308,7 +269,6 @@ app.registerExtension({
                                     method: "DELETE"
                                 });
                                 if (!resDel.ok) throw new Error(`HTTP ${resDel.status}`);
-                                //alert(`✅ Preset \"${label}\" supprimé.`);
                                 menu.remove();
                             } catch (e) {
                                 alert("❌ Delete error : " + e.message);
@@ -324,8 +284,8 @@ app.registerExtension({
                     alert("❌ Error when loading presets : " + e.message);
                 }
             }, { serialize: false });
-			
-			// 🧹 Remove All Categories
+            
+            // 🧹 Remove All Categories
             if (!node._crea_removeAllAdded) {
                 node._crea_removeAllAdded = true;
                 node.addWidget("button", "🧹 Remove All Categories", "", () => {
@@ -341,7 +301,6 @@ app.registerExtension({
                             }
                         }
                         delete node._crea_dynamicValues[name];
-                        console.log("🧹 Combo supprimé:", name);
                     }
                     node._crea_updateCsvJson?.();
                     node.widgets_changed = true;
@@ -349,7 +308,7 @@ app.registerExtension({
                 }, { serialize: false });
             }
 
-            // 🗑️ Bouton Remove a Category
+            // ➖ Bouton Remove a Category
             node.addWidget("button", "➖ Remove a Category", "", () => {
                 const existing = Object.keys(node._crea_dynamicValues || {});
                 if (!existing.length) return alert("No combo to delete.");
@@ -405,7 +364,6 @@ app.registerExtension({
                         node.widgets_changed = true;
                         node.onResize?.();
                         menu.remove();
-                        //console.log("🗑️ Combo supprimé via menu:", name);
                     };
                     item.onmouseover = () => item.style.background = "#555";
                     item.onmouseout = () => item.style.background = "#222";
@@ -414,21 +372,14 @@ app.registerExtension({
                 document.body.appendChild(menu);
             }, { serialize: false });
 
-            waitForJsonToBeReady(node, jsonIndex);
+            waitForJsonToBeReady(node);
 
             setTimeout(() => {
-                const jsonRaw = node.widgets?.[jsonIndex]?.value;
                 const now = performance.now();
                 const isRefresh = (now - window._crea_prompt_launch_time) < 3000;
 
-                //console.log("⏱️ Post-création — jsonRaw =", jsonRaw);
-                //console.log("⏱️ Post-création — isRefresh =", isRefresh);
-
                 if (!isRefresh) {
-                    //console.log("📦 Chargement des combos par défaut (reload)");
                     tryLoadDefaultCombos(node);
-                } else {
-                    //console.log("🔁 Node restauré (refresh) — preset ignoré");
                 }
             }, 500);
 
@@ -535,7 +486,6 @@ app.registerExtension({
                     node._csvMenu = menu;
 
                 } catch (err) {
-                    //console.error("❌ Erreur de récupération CSV :", err);
                     alert("Error when try to find CSV files.");
                 }
             }, { serialize: false });
@@ -545,14 +495,15 @@ app.registerExtension({
     }
 });
 
-function waitForJsonToBeReady(node, jsonIndex) {
+function waitForJsonToBeReady(node) {
     let attempts = 0;
     const check = () => {
-        const raw = node.widgets[jsonIndex]?.value;
-        if (!raw || raw.trim() === "" || raw.trim() === "{}") {
+        const widget = node.widgets.find(w => w.name === "__csv_json");
+        const raw = widget ? widget.value : null;
+
+        if (!raw || typeof raw !== 'string' || raw.trim() === "" || raw.trim() === "{}") {
             attempts++;
             if (attempts < 50) return setTimeout(check, 100);
-            console.warn("⏳ Échec : __csv_json toujours vide après 5s");
             return;
         }
 
@@ -564,9 +515,6 @@ function waitForJsonToBeReady(node, jsonIndex) {
             if (rawIsJson && !node._crea_restored) {
                 node._crea_restored = true;
                 window.creaPromptRestores.push(node);
-                console.log("✅ Node CreaPrompt prêt pour restauration :", parsed);
-            } else {
-                console.log("ℹ️ JSON présent, mais pas une vraie restauration (cas reload)");
             }
         } catch (e) {
             console.warn("❌ JSON __csv_json mal formé ou vide :", raw);
@@ -575,6 +523,7 @@ function waitForJsonToBeReady(node, jsonIndex) {
     check();
 }
 
+
 let attempt = 0;
 const waitAndRestore = async () => {
     attempt++;
@@ -582,14 +531,9 @@ const waitAndRestore = async () => {
     if (!nodes.length && attempt < 50) {
         return setTimeout(waitAndRestore, 100);
     }
-
-    if (!nodes.length) {
-        console.warn("⏳ Aucun node CreaPrompt détecté après 5s — restauration annulée");
-        return;
-    }
+    if (!nodes.length) return;
 
     window._crea_prompt_refresh_done = true;
-    console.log(`🔁 Début de la restauration CreaPrompt (tentative ${attempt})`);
 
     const resList = await fetch("/custom_nodes/creaprompt/csv_list");
     if (!resList.ok) return;
@@ -629,7 +573,6 @@ const waitAndRestore = async () => {
             node.widgets_changed = true;
             node.onResize?.();
         }
-
         updateCsvJson?.();
     }
 };
@@ -637,23 +580,19 @@ const waitAndRestore = async () => {
 async function tryLoadDefaultCombos(node) {
     try {
         if (Object.keys(node._crea_dynamicValues || {}).length > 0) {
-            console.log("⏩ Des combos existent déjà, skip default_combos.txt");
             return;
         }
 
         const res = await fetch("/custom_nodes/creaprompt/presets/default_combos.txt");
         if (!res.ok) {
-            console.warn("⚠️ default_combos.txt non trouvé");
             return;
         }
 
         const text = await res.text();
         const labels = text.split("\n").map(l => l.trim()).filter(Boolean);
-        //console.log("📥 Contenu du fichier default_combos.txt :", labels);
 
         const resList = await fetch("/custom_nodes/creaprompt/csv_list");
         if (!resList.ok) {
-            console.warn("⚠️ Unable to load csv_list");
             return;
         }
         const allFiles = await resList.json();
@@ -665,16 +604,12 @@ async function tryLoadDefaultCombos(node) {
         }
 
         for (const label of labels) {
-            console.log(`🔎 Traitement du label "${label}"`);
-
             if (node.widgets.some(w => w.name === label)) {
-                console.warn(`⏩ Le combo "${label}" est déjà présent, ignoré.`);
                 continue;
             }
 
             const file = fileMap[label];
             if (!file) {
-                console.warn(`⚠️ Fichier CSV introuvable pour "${label}"`);
                 continue;
             }
 
@@ -694,14 +629,11 @@ async function tryLoadDefaultCombos(node) {
                 values: values,
                 serialize: false
             });
-
-            console.log(`✅ Combo ajouté : ${label} (depuis ${file})`);
         }
 
         node._crea_updateCsvJson?.();
         node.widgets_changed = true;
         node.onResize?.();
-        console.log("📦 Combos par défaut injectés depuis default_combos.txt");
     } catch (e) {
         console.warn("⚠️ Erreur lors du chargement des combos par défaut :", e);
     }
