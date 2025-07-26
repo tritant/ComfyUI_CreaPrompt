@@ -304,7 +304,10 @@ app.registerExtension({
                     }
                     node._crea_updateCsvJson?.();
                     node.widgets_changed = true;
-                    node.onResize?.();
+                    const newSize = node.computeSize();
+		            node.size[1] = newSize[1];
+                    node.onResize?.(node.size);
+                    node.graph.setDirtyCanvas(true, true);
                 }, { serialize: false });
             }
 
@@ -362,7 +365,10 @@ app.registerExtension({
                         delete node._crea_dynamicValues[name];
                         node._crea_updateCsvJson?.();
                         node.widgets_changed = true;
-                        node.onResize?.();
+						const newSize2 = node.computeSize();
+		                node.size[1] = newSize2[1];
+                        node.onResize?.(node.size);
+                        node.graph.setDirtyCanvas(true, true);
                         menu.remove();
                     };
                     item.onmouseover = () => item.style.background = "#555";
@@ -370,6 +376,7 @@ app.registerExtension({
                     menu.appendChild(item);
                 });
                 document.body.appendChild(menu);
+
             }, { serialize: false });
 
             waitForJsonToBeReady(node);
@@ -491,8 +498,11 @@ app.registerExtension({
             }, { serialize: false });
 
             button.label = "➕ Add a Category";
+
         };
+
     }
+
 });
 
 function waitForJsonToBeReady(node) {
@@ -633,7 +643,7 @@ async function tryLoadDefaultCombos(node) {
 
         node._crea_updateCsvJson?.();
         node.widgets_changed = true;
-        node.onResize?.();
+
     } catch (e) {
         console.warn("⚠️ Erreur lors du chargement des combos par défaut :", e);
     }
