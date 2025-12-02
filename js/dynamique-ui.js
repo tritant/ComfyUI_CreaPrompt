@@ -73,17 +73,13 @@ function cleanupWidgets(node, targetConfigKeys) {
         "seed",                     
         "Prompt_count",             
         "CreaPrompt_Collection",
-        // On protège nos spacers custom par leur nom partiel ou type si besoin
         "separator_top",
         "separator_bottom"
     ];
 
     for (let i = node.widgets.length - 1; i >= 0; i--) {
         const w = node.widgets[i];
-        
-        // On ne supprime pas les spacers (type CUSTOM_SPACER)
         if (w.type === "CUSTOM_SPACER") continue;
-
         if (protectedWidgets.includes(w.name)) continue;
 
         if (w.type === "combo") {
@@ -159,23 +155,22 @@ function showFloatingMenu(items, onClickItem, clickX, clickY, title = "Menu") {
     document.body.appendChild(menu);
 }
 
-// Fonction pour ajouter ton spacer custom proprement
 function addCustomSpacer(node, name, title) {
     node.widgets.push({
         name: name,
         type: "CUSTOM_SPACER",
-        serialize: false, // Important pour ne pas sauvegarder ce widget
+        serialize: false, 
         draw: (ctx, node, width, y) => {
             const rectHeight = 20, marginY = 5, x_padding = 10;
-            ctx.fillStyle = "#272"; // Couleur du fond (Vert foncé)
+            ctx.fillStyle = "#272"; 
             ctx.fillRect(x_padding, y + marginY, width - (x_padding * 2), rectHeight);
-            ctx.fillStyle = "#CCC"; // Couleur du texte
+            ctx.fillStyle = "#CCC"; 
             ctx.font = "bold 12px Arial";
             ctx.textAlign = "center";
             const textY = y + marginY + rectHeight / 2 + 4;
             ctx.fillText(title, width / 2, textY);
         },
-        computeSize: () => [0, 30] // Hauteur totale
+        computeSize: () => [0, 30] 
     });
 }
 
@@ -199,17 +194,34 @@ app.registerExtension({
             node._crea_is_restored = false; 
             node._crea_load_timer = null;
 
+            // --- WIDGET JSON ---
             const jsonWidget = node.widgets.find(w => w.name === "__csv_json");
             
             node._crea_updateCsvJson = function() {
                 if (jsonWidget) jsonWidget.value = JSON.stringify(node._crea_dynamicValues);
             };
 
+            // ⚡⚡ CORRECTION DU BUG D'AFFICHAGE AU SCROLL ⚡⚡
+            // Au lieu de le cacher une seule fois, on force le masquage à chaque redessin du node.
+            // Cela résout le problème où ComfyUI recrée le DOM quand le node revient à l'écran.
             if (jsonWidget) {
-                jsonWidget.computeSize = () => [0, -4];
-                requestAnimationFrame(() => {
-                    if (jsonWidget.inputEl?.parentElement) jsonWidget.inputEl.parentElement.style.display = "none";
-                });
+                jsonWidget.computeSize = () => [0, -4]; // Réduit la taille logique
+                
+                const origDrawForeground = node.onDrawForeground;
+                node.onDrawForeground = function (ctx) {
+                    if (origDrawForeground) origDrawForeground.apply(this, arguments);
+                    
+                    // On vérifie et on cache l'élément DOM s'il est visible
+                    if (jsonWidget.inputEl) {
+                        if (jsonWidget.inputEl.style.display !== "none") {
+                            jsonWidget.inputEl.style.display = "none";
+                        }
+                        // Parfois ComfyUI met le widget dans un parent qui a des marges/bordures
+                        if (jsonWidget.inputEl.parentElement && jsonWidget.inputEl.parentElement.style.display !== "none") {
+                            jsonWidget.inputEl.parentElement.style.display = "none";
+                        }
+                    }
+                };
             }
 
             // 🕒 TIMEOUT
