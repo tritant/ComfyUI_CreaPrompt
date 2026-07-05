@@ -118,6 +118,170 @@ def select_random_line_from_csv_file(file, folder):
     lines_chosed = "".join(chosen_lines)
     return lines_chosed
 
+# ============================================================================
+# CreaPrompt Enhancer (imports lourds paresseux, rien n'est chargé au boot)
+# ============================================================================
+
+ENHANCER_PRESETS_PATH = os.path.join(script_directory, "enhancer_presets.json")
+
+def load_enhancer_presets():
+    try:
+        with open(ENHANCER_PRESETS_PATH, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"⚠️ CreaPrompt Enhancer: presets load error: {e}")
+        return {}
+
+ENHANCER_PRESETS = load_enhancer_presets()
+ENHANCER_PRESET_KEYS = list(ENHANCER_PRESETS.keys())
+
+def enhancer_precision_options():
+    import importlib.util
+    opts = ["fp16", "bf16"]
+    if importlib.util.find_spec("bitsandbytes") is not None:
+        opts = ["int4", "int8"] + opts
+    return opts
+
+class CreaPromptEnhancerManager:
+    _instance = None
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.cache = {}
+        return cls._instance
+    def get(self, key):
+        return self.cache.get(key)
+    def set(self, key, model, processor):
+        self.cache[key] = (model, processor)
+    def unload(self, key):
+        if key in self.cache:
+            import gc
+            import torch
+            model, processor = self.cache.pop(key)
+            del model
+            del processor
+            gc.collect()
+            if torch.cuda.is_available():
+                torch.cuda.empty_cache()
+            print(f"🧹 CreaPrompt Enhancer: model '{key}' unloaded")
+
+ENHANCER_MANAGER = CreaPromptEnhancerManager()
+
+def enhancer_load_model(model_name, precision):
+    key = f"{model_name}_{precision}"
+    cached = ENHANCER_MANAGER.get(key)
+    if cached:
+        return cached
+
+    import torch
+    import folder_paths
+    from huggingface_hub import snapshot_download
+    from transformers import AutoProcessor
+    try:
+        from transformers import Qwen3VLForConditionalGeneration as MODEL_CLASS
+    except ImportError:
+        from transformers import Qwen2VLForConditionalGeneration as MODEL_CLASS
+
+    models_dir = os.path.join(folder_paths.models_dir, "LLM")
+    local_path = os.path.join(models_dir, model_name.split("/")[-1])
+
+    if not os.path.isfile(os.path.join(local_path, "config.json")):
+        print(f"⬇️ CreaPrompt Enhancer: downloading {model_name} to {local_path}...")
+        snapshot_download(repo_id=model_name, local_dir=local_path)
+
+    load_kwargs = {}
+    if precision in ("int4", "int8"):
+        from transformers import BitsAndBytesConfig
+        if precision == "int4":
+            load_kwargs["quantization_config"] = BitsAndBytesConfig(
+                load_in_4bit=True,
+                bnb_4bit_compute_dtype=torch.float16,
+                bnb_4bit_use_double_quant=True,
+            )
+        else:
+            load_kwargs["quantization_config"] = BitsAndBytesConfig(load_in_8bit=True)
+        load_kwargs["device_map"] = "auto"
+    else:
+        load_kwargs["torch_dtype"] = torch.bfloat16 if precision == "bf16" else torch.float16
+
+    print(f"⏳ CreaPrompt Enhancer: loading {model_name} ({precision})...")
+    processor = AutoProcessor.from_pretrained(local_path, trust_remote_code=True)
+    model = MODEL_CLASS.from_pretrained(
+        local_path, trust_remote_code=True, low_cpu_mem_usage=True, **load_kwargs
+    )
+    if precision not in ("int4", "int8"):
+        import comfy.model_management
+        model.to(comfy.model_management.get_torch_device())
+
+    ENHANCER_MANAGER.set(key, model, processor)
+    print(f"✅ CreaPrompt Enhancer: model '{key}' loaded and cached")
+    return model, processor
+
+def enhancer_tensor_to_pil(tensor, max_size=1024, max_frames=None):
+    from PIL import Image
+    import numpy as np
+    if tensor is None:
+        return []
+    total = tensor.shape[0]
+    indices = range(total)
+    if max_frames is not None and total > max_frames:
+        step = total / max_frames
+        indices = [int(i * step) for i in range(max_frames)]
+    images = []
+    for i in indices:
+        img = Image.fromarray((tensor[i].cpu().numpy() * 255.0).astype(np.uint8))
+        w, h = img.size
+        if max(w, h) > max_size:
+            ratio = max_size / max(w, h)
+            img = img.resize((int(w * ratio), int(h * ratio)), Image.LANCZOS)
+        images.append(img)
+    return images
+
+def enhancer_run(prompt_text, model_name, precision, system_prompt, gen_params,
+                 max_new_tokens, seed, image=None, video=None):
+    import torch
+    model, processor = enhancer_load_model(model_name, precision)
+
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+    user_content = []
+    if video is not None:
+        frames = enhancer_tensor_to_pil(video, max_frames=32)
+        user_content.append({"type": "video", "video": frames, "fps": 1.0})
+    elif image is not None:
+        for img in enhancer_tensor_to_pil(image):
+            user_content.append({"type": "image", "image": img})
+    if prompt_text:
+        user_content.append({"type": "text", "text": prompt_text})
+
+    messages = [
+        {"role": "system", "content": [{"type": "text", "text": system_prompt.strip()}]},
+        {"role": "user", "content": user_content},
+    ]
+
+    inputs = processor.apply_chat_template(
+        messages, tokenize=True, add_generation_prompt=True,
+        return_dict=True, return_tensors="pt"
+    )
+    inputs = {k: v.to(model.device) for k, v in inputs.items()}
+
+    params = dict(gen_params or {})
+    params.update({
+        "max_new_tokens": max_new_tokens,
+        "pad_token_id": processor.tokenizer.eos_token_id,
+    })
+
+    with torch.inference_mode():
+        generated_ids = model.generate(**inputs, **params)
+
+    trimmed = [out[len(inp):] for inp, out in zip(inputs["input_ids"], generated_ids)]
+    return processor.batch_decode(
+        trimmed, skip_special_tokens=True, clean_up_tokenization_spaces=True
+    )[0].strip()
+
+
 class CreaPrompt_0:
 
     RETURN_TYPES = (
@@ -140,6 +304,8 @@ class CreaPrompt_0:
 
     @classmethod
     def INPUT_TYPES(cls):
+        preset_options = ENHANCER_PRESET_KEYS + ["Your instruction"]
+        precision_options = enhancer_precision_options()
         return {
             "required": {
                 "__csv_json": ("STRING", {"multiline": True, "default": "{}", "input": False})
@@ -148,6 +314,15 @@ class CreaPrompt_0:
                 "Prompt_count": ("INT", {"default": 1, "min": 1, "max": 1000}),
                 "CreaPrompt_Collection": (["disabled"] + ["enabled"], {"default": "disabled"}),
                 "seed": ("INT", {"default": 0, "min": 0, "max": 1125899906842624}),
+                "Enhancer": (["disabled", "enabled"], {"default": "disabled"}),
+                "Enhancer_model": ("STRING", {"default": "hfmaster/Qwen3-VL-4B"}),
+                "Enhancer_precision": (precision_options, {"default": "fp16"}),
+                "Enhancer_preset": (preset_options, {"default": preset_options[0]}),
+                "Enhancer_instruction": ("STRING", {"multiline": True, "default": ""}),
+                "Enhancer_max_tokens": ("INT", {"default": 512, "min": 64, "max": 4096, "step": 64}),
+                "Unload_after_generation": ("BOOLEAN", {"default": True}),
+                "image": ("IMAGE",),
+                "video": ("IMAGE",),
             }
         }
 
@@ -174,11 +349,6 @@ class CreaPrompt_0:
                 final_values += prompt_value + "\n" 
                 prompt_value = ""            
             final_values = final_values.strip()  
-            print(f"➡️CreaPrompt Seed: {seed}")
-            return (
-                final_values,
-                seed,
-            )            
         else:         
             for c in range(prompts_count):
                 for i, filename in enumerate(name_of_files):
@@ -194,12 +364,65 @@ class CreaPrompt_0:
                 final_values += concatenated_values [:-1] + "\n" 
                 concatenated_values = ""
             final_values = final_values.strip()  
-            print(f"➡️CreaPrompt Seed: {seed}")
-            return (
-                final_values,
-                seed,
-            )
- 
+
+        # ===================== Enhancer =====================
+        if kwargs.get("Enhancer", "disabled") == "enabled":
+            image = kwargs.get("image", None)
+            video = kwargs.get("video", None)
+            model_name = kwargs.get("Enhancer_model", "hfmaster/Qwen3-VL-4B")
+            precision = kwargs.get("Enhancer_precision", "int4")
+            max_tokens = kwargs.get("Enhancer_max_tokens", 512)
+            preset_name = kwargs.get("Enhancer_preset", "")
+            preset = ENHANCER_PRESETS.get(preset_name, {})
+
+            if preset_name == "Your instruction":
+                system_prompt = kwargs.get("Enhancer_instruction", "").strip()
+                gen_params = {"do_sample": True, "temperature": 0.7, "top_p": 0.8}
+            else:
+                system_prompt = preset.get("system_prompt", "")
+                gen_params = preset.get("gen_params", {})
+
+            try:
+                if image is not None or video is not None:
+                    # Mode analyse visuelle : une seule description, le texte CSV est ignoré
+                    text_input = preset.get(
+                        "image_instruction",
+                        "Describe this image as a single detailed image generation prompt."
+                    )
+                    enhanced = enhancer_run(
+                        text_input, model_name, precision, system_prompt,
+                        gen_params, max_tokens, seed, image=image, video=video
+                    )
+                    if enhanced:
+                        final_values = enhanced
+                        print(f"✨CreaPrompt enhanced: {final_values}")
+                else:
+                    # Mode texte : un appel LLM par ligne, format multi-lignes préservé
+                    enhanced_lines = []
+                    for idx, line in enumerate(final_values.split("\n")):
+                        if not line.strip():
+                            continue
+                        enhanced = enhancer_run(
+                            line, model_name, precision, system_prompt,
+                            gen_params, max_tokens, seed + idx
+                        )
+                        enhanced = enhanced.replace("\n", " ").strip() if enhanced else line
+                        enhanced_lines.append(enhanced)
+                        print(f"✨CreaPrompt enhanced: {enhanced}")
+                    if enhanced_lines:
+                        final_values = "\n".join(enhanced_lines)
+            except Exception as e:
+                print(f"⚠️ CreaPrompt Enhancer error, raw prompt returned: {e}")
+            finally:
+                if kwargs.get("Unload_after_generation", False):
+                    ENHANCER_MANAGER.unload(f"{model_name}_{precision}")
+        # ====================================================
+
+        seeds_list = ", ".join(str(seed + i) for i in range(len(final_values.split("\n"))))
+        print(f"➡️CreaPrompt Seed: {seeds_list}")
+        return (final_values, seed)
+
+
 class CreaPrompt:
 
     RETURN_TYPES = (
@@ -610,17 +833,18 @@ class CreaPrompt_list:
     @classmethod
     def INPUT_TYPES(s):
         return {"required": {"Multi_prompts": ("STRING", {"multiline": True, "default": "body_text"}),
+                             "seed_base": ("INT", {"forceInput": True}),
                              "prefix": ("STRING", {"multiline": True, "default": ""}),
                              "suffix": ("STRING", {"multiline": True, "default": ""}),
                             }
         }
-    RETURN_TYPES = ("STRING", "STRING",)
-    RETURN_NAMES = ("prompt", "prompt_debug",)
+    RETURN_TYPES = ("STRING", "INT", "STRING",)
+    RETURN_NAMES = ("prompt", "seed", "prompt_debug",)
     OUTPUT_IS_LIST = (True, True, False)
     FUNCTION = "create_list"
     CATEGORY = "CreaPrompt"
 
-    def create_list(self, Multi_prompts, prefix="", suffix=""):
+    def create_list(self, Multi_prompts, seed_base, prefix="", suffix=""):
         Multi_prompts = Multi_prompts.strip()
         lines = Multi_prompts.split('\n')
         if prefix == "" and suffix == "":
@@ -642,9 +866,11 @@ class CreaPrompt_list:
              if prefix != "":
               prompt_list_debug = ["➡️" + prefix + "," + line for line in lines]
              if suffix != "":   
-              prompt_list_debug = ["➡️" + line + "," + suffix for line in lines]              
+              prompt_list_debug = ["➡️" + line + "," + suffix for line in lines]
+        seed_list_out = [seed_base + i for i in range(len(prompt_list_out))]  
+        print(f"➡️ Batch synchronisé : {len(prompt_list_out)} prompts / {len(seed_list_out)} seeds")        
         debug_prompts = '\n'.join(prompt_list_debug)
-        return (prompt_list_out, debug_prompts)       
+        return (prompt_list_out, seed_list_out, debug_prompts)       
         
 NODE_CLASS_MAPPINGS = {
     "CreaPrompt_0": CreaPrompt_0,
