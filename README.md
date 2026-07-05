@@ -12,7 +12,9 @@ https://github.com/tritant/sd-webui-creaprompt
 You can add your category easily. Just add a .csv file in the csv folder. The script will automatically add it to the interface. Each entry must be on a different line in the .csv file. The file name must have a specific format, e.g. x_xnameoffile.csv. The x are numbers which will determine the display order in the prompt (alphabetical order).
 There is also a collection of 1150 prompts updated regularly
 
-![Capture d'écran 2024-07-07 124640](https://github.com/tritant/ComfyUI_CreaPrompt/assets/15909062/7ba41044-70d4-44c4-93b2-7009eaf3cf0e)
+<img width="2557" height="1240" alt="Capture d&#39;écran 2026-07-05 183802" src="https://github.com/user-attachments/assets/1dd3d598-b13a-4676-b529-00112d5a4a8a" />
+<img width="2557" height="1236" alt="Capture d&#39;écran 2026-07-05 190238" src="https://github.com/user-attachments/assets/219ca552-b8f4-412a-9ad0-e70e74e479e7" />
+
 
 # Multi Nodes
 
