@@ -73,6 +73,9 @@ function cleanupWidgets(node, targetConfigKeys) {
         "seed",                     
         "Prompt_count",             
         "CreaPrompt_Collection",
+        "Enhancer",
+        "Enhancer_precision",
+        "Enhancer_preset",
         "separator_top",
         "separator_bottom"
     ];
@@ -233,6 +236,23 @@ app.registerExtension({
                 }
                 loadDefaultConfig(node);
             }, 100);
+
+            // ================= SPACER ENHANCER =================
+            addCustomSpacer(node, "separator_enhancer", "Enhancer");
+            {
+                const spIdx = node.widgets.findIndex(w => w.name === "separator_enhancer");
+                const enhIdx = node.widgets.findIndex(w => w.name === "Enhancer");
+                if (spIdx > -1 && enhIdx > -1) {
+                    const [sp] = node.widgets.splice(spIdx, 1);
+                    // Sérialisation SYMÉTRIQUE : le spacer est un widget normal avec une valeur.
+                    // Il occupe le même slot dans widgets_values au serialize ET au configure,
+                    // donc aucun décalage positionnel des widgets Enhancer.
+                    delete sp.serialize;
+                    delete sp.options;
+                    sp.value = "";
+                    node.widgets.splice(enhIdx, 0, sp);
+                }
+            }
 
             // ================= 1. SPACER HAUT =================
             addCustomSpacer(node, "separator_top", "Preset Actions");
