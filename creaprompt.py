@@ -444,31 +444,22 @@ class CreaPrompt_0:
                         "labeled image with the following keywords into ONE single coherent "
                         "image generation prompt. Do not ignore any image. Output only the prompt."
                     )
-                    # Deux passes si plusieurs images : descriptions individuelles (fiables),
-                    # puis fusion purement textuelle — l'attention multi-image des petits VL
-                    # est trop faible pour tout faire en un appel
-                    img_context = None
-                    if len(images) > 1:
-                        descs = enhancer_describe_images(images, model_name, precision, seed)
-                        img_context = "Below are detailed descriptions of the labeled images.\n" + \
-                            "\n".join(f"Image {n}: {d}" for n, d in enumerate(descs, 1))
+                    # Deux passes systématiques : description(s) individuelle(s) fiable(s),
+                    # puis fusion purement textuelle avec checklist — en un seul appel,
+                    # l'attention du petit VL ignore l'image dès que les keywords sont denses
+                    descs = enhancer_describe_images(images, model_name, precision, seed)
+                    img_context = "Below are detailed descriptions of the labeled images.\n" + \
+                        "\n".join(f"Image {n}: {d}" for n, d in enumerate(descs, 1))
+                    checklist = enhancer_merge_checklist(len(images), with_keywords=True)
                     enhanced_lines = []
                     for idx, line in enumerate(final_values.split("\n")):
                         if not line.strip():
                             continue
-                        if img_context:
-                            checklist = enhancer_merge_checklist(len(images), with_keywords=True)
-                            text_input = f"{base_instruction}\n\n{img_context}\n\nKeywords: {line}\n{checklist}"
-                            enhanced = enhancer_run(
-                                text_input, model_name, precision, system_prompt,
-                                gen_params, max_tokens, seed + idx
-                            )
-                        else:
-                            text_input = f"{base_instruction}\n\nKeywords: {line}"
-                            enhanced = enhancer_run(
-                                text_input, model_name, precision, system_prompt,
-                                gen_params, max_tokens, seed + idx, images=images
-                            )
+                        text_input = f"{base_instruction}\n\n{img_context}\n\nKeywords: {line}\n{checklist}"
+                        enhanced = enhancer_run(
+                            text_input, model_name, precision, system_prompt,
+                            gen_params, max_tokens, seed + idx
+                        )
                         enhanced = enhanced.replace("\n", " ").strip() if enhanced else line
                         enhanced_lines.append(enhanced)
                         print(f"✨CreaPrompt enhanced: {enhanced}")
