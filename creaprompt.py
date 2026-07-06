@@ -237,8 +237,44 @@ def enhancer_tensor_to_pil(tensor, max_size=1024, max_frames=None):
         images.append(img)
     return images
 
+def enhancer_describe_images(images, model_name, precision, seed):
+    """Passe 1 : décrit chaque image individuellement (fiable pour les petits VL)."""
+    descriptions = []
+    for n, tensor in enumerate(images, 1):
+        desc = enhancer_run(
+            "Describe this image in detail, around 100 to 130 words: the main subject and its "
+            "precise appearance (clothing, materials, textures, colors, pose or action) first, "
+            "then the environment and background, the composition and framing, the lighting "
+            "quality and direction, the color palette, the mood, and the medium or photographic "
+            "style. Output only the description.",
+            model_name, precision,
+            "You are a precise visual analyst.",
+            {"do_sample": False},
+            384, seed + n,
+            images=[tensor],
+        )
+        desc = desc.replace("\n", " ").strip()
+        descriptions.append(desc)
+        print(f"🖼️CreaPrompt image {n}: {desc}")
+    return descriptions
+
+def enhancer_merge_checklist(n_images, with_keywords):
+    """Checklist en fin de message : contre le 'lost in the middle' des petits LLM."""
+    items = "".join(
+        f"- the main subject of Image {i}, plus elements of its style, lighting and mood\n"
+        for i in range(1, n_images + 1)
+    )
+    if with_keywords:
+        items += "- every keyword listed above\n"
+    return (
+        "\nMANDATORY CHECKLIST — your single output prompt MUST contain ALL of the "
+        "following, blended into ONE coherent scene:\n" + items +
+        "Before writing your final answer, silently verify that every item above is "
+        "present in your prompt. Output only the prompt."
+    )
+
 def enhancer_run(prompt_text, model_name, precision, system_prompt, gen_params,
-                 max_new_tokens, seed, image=None, video=None):
+                 max_new_tokens, seed, images=None, video=None):
     import torch
     model, processor = enhancer_load_model(model_name, precision)
 
@@ -250,9 +286,13 @@ def enhancer_run(prompt_text, model_name, precision, system_prompt, gen_params,
     if video is not None:
         frames = enhancer_tensor_to_pil(video, max_frames=32)
         user_content.append({"type": "video", "video": frames, "fps": 1.0})
-    elif image is not None:
-        for img in enhancer_tensor_to_pil(image):
-            user_content.append({"type": "image", "image": img})
+    elif images:
+        multi = len(images) > 1
+        for n, tensor in enumerate(images, 1):
+            if multi:
+                user_content.append({"type": "text", "text": f"Image {n}:"})
+            for img in enhancer_tensor_to_pil(tensor):
+                user_content.append({"type": "image", "image": img})
     if prompt_text:
         user_content.append({"type": "text", "text": prompt_text})
 
@@ -272,6 +312,9 @@ def enhancer_run(prompt_text, model_name, precision, system_prompt, gen_params,
         "max_new_tokens": max_new_tokens,
         "pad_token_id": processor.tokenizer.eos_token_id,
     })
+    if params.get("do_sample") is False:
+        # neutralise les defaults de generation_config.json (warning transformers en greedy)
+        params.update({"temperature": None, "top_p": None, "top_k": None})
 
     with torch.inference_mode():
         generated_ids = model.generate(**inputs, **params)
@@ -320,8 +363,12 @@ class CreaPrompt_0:
                 "Enhancer_preset": (preset_options, {"default": preset_options[0]}),
                 "Enhancer_instruction": ("STRING", {"multiline": True, "default": ""}),
                 "Enhancer_max_tokens": ("INT", {"default": 512, "min": 64, "max": 4096, "step": 64}),
+                "Use_image": ("BOOLEAN", {"default": True}),
+                "Use_image_plus_categories": ("BOOLEAN", {"default": False}),
                 "Unload_after_generation": ("BOOLEAN", {"default": True}),
                 "image": ("IMAGE",),
+                "image_2": ("IMAGE",),
+                "image_3": ("IMAGE",),
                 "video": ("IMAGE",),
             }
         }
@@ -367,8 +414,12 @@ class CreaPrompt_0:
 
         # ===================== Enhancer =====================
         if kwargs.get("Enhancer", "disabled") == "enabled":
-            image = kwargs.get("image", None)
-            video = kwargs.get("video", None)
+            if kwargs.get("Use_image", True):
+                images = [t for t in (kwargs.get("image"), kwargs.get("image_2"), kwargs.get("image_3")) if t is not None]
+                video = kwargs.get("video", None)
+            else:
+                images = []
+                video = None
             model_name = kwargs.get("Enhancer_model", "hfmaster/Qwen3-VL-4B")
             precision = kwargs.get("Enhancer_precision", "int4")
             max_tokens = kwargs.get("Enhancer_max_tokens", 512)
@@ -383,16 +434,75 @@ class CreaPrompt_0:
                 gen_params = preset.get("gen_params", {})
 
             try:
-                if image is not None or video is not None:
+                if images and kwargs.get("Use_image_plus_categories", False):
+                    # Mode image + texte : le visuel sert de référence, combiné aux fragments
+                    # CSV/Collection, un appel LLM par ligne, format multi-lignes préservé
+                    base_instruction = preset.get(
+                        "image_text_instruction",
+                        "You are given one or more images labeled Image 1, Image 2, etc. "
+                        "Combine the main subject and the style, lighting and mood of EACH "
+                        "labeled image with the following keywords into ONE single coherent "
+                        "image generation prompt. Do not ignore any image. Output only the prompt."
+                    )
+                    # Deux passes si plusieurs images : descriptions individuelles (fiables),
+                    # puis fusion purement textuelle — l'attention multi-image des petits VL
+                    # est trop faible pour tout faire en un appel
+                    img_context = None
+                    if len(images) > 1:
+                        descs = enhancer_describe_images(images, model_name, precision, seed)
+                        img_context = "Below are detailed descriptions of the labeled images.\n" + \
+                            "\n".join(f"Image {n}: {d}" for n, d in enumerate(descs, 1))
+                    enhanced_lines = []
+                    for idx, line in enumerate(final_values.split("\n")):
+                        if not line.strip():
+                            continue
+                        if img_context:
+                            checklist = enhancer_merge_checklist(len(images), with_keywords=True)
+                            text_input = f"{base_instruction}\n\n{img_context}\n\nKeywords: {line}\n{checklist}"
+                            enhanced = enhancer_run(
+                                text_input, model_name, precision, system_prompt,
+                                gen_params, max_tokens, seed + idx
+                            )
+                        else:
+                            text_input = f"{base_instruction}\n\nKeywords: {line}"
+                            enhanced = enhancer_run(
+                                text_input, model_name, precision, system_prompt,
+                                gen_params, max_tokens, seed + idx, images=images
+                            )
+                        enhanced = enhanced.replace("\n", " ").strip() if enhanced else line
+                        enhanced_lines.append(enhanced)
+                        print(f"✨CreaPrompt enhanced: {enhanced}")
+                    if enhanced_lines:
+                        final_values = "\n".join(enhanced_lines)
+                elif images or video is not None:
                     # Mode analyse visuelle : une seule description, le texte CSV est ignoré
-                    text_input = preset.get(
-                        "image_instruction",
-                        "Describe this image as a single detailed image generation prompt."
-                    )
-                    enhanced = enhancer_run(
-                        text_input, model_name, precision, system_prompt,
-                        gen_params, max_tokens, seed, image=image, video=video
-                    )
+                    if len(images) > 1:
+                        # Deux passes : descriptions individuelles puis fusion textuelle
+                        fusion_instruction = preset.get(
+                            "fusion_instruction",
+                            "Combine these images into ONE single image generation prompt: "
+                            "take the main subject of each image and blend elements of the "
+                            "style, lighting and mood of each into one coherent scene. "
+                            "Output only the prompt."
+                        )
+                        descs = enhancer_describe_images(images, model_name, precision, seed)
+                        img_context = "Below are detailed descriptions of the labeled images.\n" + \
+                            "\n".join(f"Image {n}: {d}" for n, d in enumerate(descs, 1))
+                        checklist = enhancer_merge_checklist(len(images), with_keywords=False)
+                        enhanced = enhancer_run(
+                            f"{fusion_instruction}\n\n{img_context}\n{checklist}",
+                            model_name, precision, system_prompt,
+                            gen_params, max_tokens, seed
+                        )
+                    else:
+                        text_input = preset.get(
+                            "image_instruction",
+                            "Describe this image as a single detailed image generation prompt."
+                        )
+                        enhanced = enhancer_run(
+                            text_input, model_name, precision, system_prompt,
+                            gen_params, max_tokens, seed, images=images or None, video=video
+                        )
                     if enhanced:
                         final_values = enhanced
                         print(f"✨CreaPrompt enhanced: {final_values}")
