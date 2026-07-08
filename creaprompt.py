@@ -432,6 +432,9 @@ class CreaPrompt_0:
             else:
                 system_prompt = preset.get("system_prompt", "")
                 gen_params = preset.get("gen_params", {})
+                user_instruction = kwargs.get("Enhancer_instruction", "").strip()
+                if user_instruction:
+                    system_prompt = f"{system_prompt}\n\nAdditional user instruction (must be followed): {user_instruction}"
 
             try:
                 if images and kwargs.get("Use_image_plus_categories", False):
