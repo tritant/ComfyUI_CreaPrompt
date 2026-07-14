@@ -73,6 +73,7 @@ function cleanupWidgets(node, targetConfigKeys) {
         "seed",                     
         "Prompt_count",             
         "CreaPrompt_Collection",
+        "Choose_collection",
         "Enhancer",
         "Enhancer_precision",
         "Enhancer_preset",
@@ -117,6 +118,13 @@ async function loadDefaultConfig(node) {
         updateNodeSize(node);
     } catch (e) { console.warn(e); }
 }
+
+// Position du dernier clic : fallback pour les menus en Nodes 2.0,
+// où les callbacks de boutons ne reçoivent pas l'événement souris.
+let _creaLastPointer = { x: 100, y: 100 };
+document.addEventListener("pointerdown", (ev) => {
+    _creaLastPointer = { x: ev.clientX, y: ev.clientY };
+}, true);
 
 function showFloatingMenu(items, onClickItem, clickX, clickY, title = "Menu") {
     const oldMenu = document.getElementById("crea_prompt_floating_menu");
@@ -227,6 +235,9 @@ app.registerExtension({
                 };
             }
 
+            // Masquage compatible Nodes 2.0 (Vue)
+            _creaRegisterJsonHide(node, jsonWidget);
+
             // 🕒 TIMEOUT
             node._crea_load_timer = setTimeout(() => {
                 if (node._crea_is_restored) return;
@@ -270,7 +281,7 @@ app.registerExtension({
             });
 
             node.addWidget("button", "📂 Load Categories Preset", "", async (v, a, n, p, e) => {
-                const cx = e?.clientX ?? 100; const cy = e?.clientY ?? 100;
+                const cx = e?.clientX ?? _creaLastPointer.x; const cy = e?.clientY ?? _creaLastPointer.y;
                 try {
                     const r = await fetch("/custom_nodes/creaprompt/presets_list");
                     const f = await r.json();
@@ -302,7 +313,7 @@ app.registerExtension({
             });
 
             node.addWidget("button", "🗑️ Delete Categories Preset", "", async (v, a, n, p, e) => {
-                const cx = e?.clientX ?? 100; const cy = e?.clientY ?? 100;
+                const cx = e?.clientX ?? _creaLastPointer.x; const cy = e?.clientY ?? _creaLastPointer.y;
                 try {
                     const r = await fetch("/custom_nodes/creaprompt/presets_list");
                     const f = await r.json();
@@ -329,7 +340,7 @@ app.registerExtension({
                     delete node._crea_dynamicValues[k];
                     node._crea_updateCsvJson();
                     updateNodeSize(node);
-                }, e?.clientX??100, e?.clientY??100, "➖ Remove");
+                }, e?.clientX ?? _creaLastPointer.x, e?.clientY ?? _creaLastPointer.y, "➖ Remove");
             });
 
             node.addWidget("button", "🧹 Remove All", "", () => {
@@ -341,7 +352,7 @@ app.registerExtension({
             });
 
             node.addWidget("button", "➕ Add Category", "", async (v, a, n, p, e) => {
-                const cx = e?.clientX ?? 100; const cy = e?.clientY ?? 100;
+                const cx = e?.clientX ?? _creaLastPointer.x; const cy = e?.clientY ?? _creaLastPointer.y;
                 const { fileMap } = await getCsvMapping();
                 const used = Object.keys(node._crea_dynamicValues);
                 const items = Object.keys(fileMap).filter(k => !used.includes(k)).map(k => ({label: k, file: fileMap[k]}));
@@ -387,3 +398,41 @@ app.registerExtension({
         }
     }
 });
+
+// ============================================================================
+// Nodes 2.0 (Vue) : masquage du widget __csv_json via CSS injecte.
+// Le widget __csv_json est le PREMIER widget declare du node, donc sa row Vue
+// est le :first-child de .lg-node-widgets. Une regle CSS par node id masque
+// la row AVANT son rendu : aucun observer, aucun re-masquage apres coup,
+// donc aucun clignotement pendant le pan (le DOM virtualise monte deja cache).
+// En 1.0 il n'existe aucun element [node-id] : les regles sont inertes, et le
+// masquage canvas (computeSize/onDrawForeground) continue de faire le travail.
+// ============================================================================
+
+const _creaHiddenIds = new Set();
+let _creaStyleEl = null;
+
+function _creaUpdateHideCss() {
+    if (!_creaStyleEl) {
+        _creaStyleEl = document.createElement("style");
+        _creaStyleEl.id = "creaprompt-hide-csv-json";
+        document.head.appendChild(_creaStyleEl);
+    }
+    const rules = [..._creaHiddenIds].map(id =>
+        `.lg-node-widgets:has([node-id="${id}"]) > .lg-node-widget:first-child { display: none !important; }`
+    ).join("\n");
+    if (_creaStyleEl.textContent !== rules) _creaStyleEl.textContent = rules;
+}
+
+function _creaRegisterJsonHide(node, _jsonWidget) {
+    // Au nodeCreated l'id n'est pas encore attribue (-1) : retries courts.
+    const tryAdd = (attempt = 0) => {
+        if (node.id != null && node.id !== -1) {
+            _creaHiddenIds.add(node.id);
+            _creaUpdateHideCss();
+        } else if (attempt < 50) {
+            setTimeout(() => tryAdd(attempt + 1), 100);
+        }
+    };
+    tryAdd();
+}
