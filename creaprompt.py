@@ -260,14 +260,25 @@ def enhancer_describe_images(images, model_name, precision, seed):
     for n, tensor in enumerate(images, 1):
         desc = enhancer_run(
             "Describe this image in detail, around 100 to 130 words: the main subject and its "
-            "precise appearance (clothing, materials, textures, colors, pose or action) first, "
-            "then the environment and background, the composition and framing, the lighting "
-            "quality and direction, the color palette, the mood, and the medium or photographic "
+            "precise appearance (clothing, materials, textures) first, naming the SPECIFIC color "
+            "of each major element (exact color of the clothing, hair, skin tone, key objects, "
+            "background), using precise color qualifiers (vivid sky-blue, pale faded denim, deep "
+            "forest green — never just 'blue' or 'green'), then its EXACT pose "
+            "and body orientation relative to the camera — state explicitly whether the subject is "
+            "seen frontally, in three-quarter view, in full profile, or from behind, which way the "
+            "head is turned, where the gaze is directed, and the position of the arms, hands and "
+            "legs — then the environment and background, the composition and framing, then the "
+            "lighting stated PRECISELY: its direction (from the left, right, above, below, behind "
+            "the subject, or frontal), its character (hard or soft, warm or cool, natural or "
+            "artificial), and any backlight, rim light or colored light present, then the overall "
+            "color character stated explicitly: whether the colors are vivid and saturated or muted "
+            "and desaturated, whether the image is bright or dark, and whether the contrast is high "
+            "or low, then the mood, and the medium or photographic "
             "style. Output only the description.",
             model_name, precision,
             "You are a precise visual analyst.",
             {"do_sample": False},
-            384, seed + n,
+            448, seed + n,
             images=[tensor],
         )
         desc = desc.replace("\n", " ").strip()
