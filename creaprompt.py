@@ -259,7 +259,7 @@ def enhancer_describe_images(images, model_name, precision, seed):
     descriptions = []
     for n, tensor in enumerate(images, 1):
         desc = enhancer_run(
-            "Describe this image in detail, around 100 to 130 words: the main subject and its "
+            "Describe this image in detail, around 130 to 160 words: the main subject and its "
             "precise appearance (clothing, materials, textures) first, naming the SPECIFIC color "
             "of each major element (exact color of the clothing, hair, skin tone, key objects, "
             "background), using precise color qualifiers (vivid sky-blue, pale faded denim, deep "
