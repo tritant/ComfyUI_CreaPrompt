@@ -259,7 +259,7 @@ def enhancer_describe_images(images, model_name, precision, seed):
     descriptions = []
     for n, tensor in enumerate(images, 1):
         desc = enhancer_run(
-            "Describe this image in detail, around 130 to 160 words: the main subject and its "
+            "Describe this image in detail, around 150 to 220 words: the main subject and its "
             "precise appearance (clothing, materials, textures) first, naming the SPECIFIC color "
             "of each major element (exact color of the clothing, hair, skin tone, key objects, "
             "background), using precise color qualifiers (vivid sky-blue, pale faded denim, deep "
@@ -289,7 +289,9 @@ def enhancer_describe_images(images, model_name, precision, seed):
 def enhancer_merge_checklist(n_images, with_keywords, with_text=False, with_collection=False):
     """Checklist en fin de message : contre le 'lost in the middle' des petits LLM."""
     items = "".join(
-        f"- the main subject of Image {i}, plus elements of its style, lighting and mood\n"
+        f"- the main subject of Image {i}, in its EXACT pose and body orientation as described "
+        f"(frontal, profile, from behind, head and gaze direction, position of the limbs), "
+        f"plus elements of its style, lighting and mood\n"
         for i in range(1, n_images + 1)
     )
     if with_collection:
@@ -551,35 +553,40 @@ class CreaPrompt_0:
                 elif (images or video is not None) and not use_text and not cat_lines:
                     # ---- Mode purement visuel : description simple ou fusion multi-image ----
                     if len(images) > 1:
-                        # Deux passes : descriptions individuelles puis fusion textuelle
+                        # Deux passes : descriptions individuelles (une seule fois) puis
+                        # un assemblage textuel par prompt demandé
                         fusion_instruction = preset.get(
                             "fusion_instruction",
-                            "Combine these images into ONE single image generation prompt: "
-                            "take the main subject of each image and blend elements of the "
-                            "style, lighting and mood of each into one coherent scene. "
+                            "Assemble ONE single image generation prompt made of one full "
+                            "passage per image, each preserving every detail of its "
+                            "description including its own background and lighting. "
                             "Output only the prompt."
                         )
                         descs = enhancer_describe_images(images, model_name, precision, seed)
                         img_context = "Below are detailed descriptions of the labeled images.\n" + \
                             "\n".join(f"Image {n}: {d}" for n, d in enumerate(descs, 1))
                         checklist = enhancer_merge_checklist(len(images), with_keywords=False)
-                        enhanced = enhancer_run(
-                            f"{fusion_instruction}\n\n{img_context}\n{checklist}",
-                            model_name, precision, system_prompt,
-                            gen_params, max_tokens, seed
-                        )
+                        text_input = f"{fusion_instruction}\n\n{img_context}\n{checklist}"
+                        run_kwargs = {}
                     else:
                         text_input = preset.get(
                             "image_instruction",
                             "Describe this image as a single detailed image generation prompt."
                         )
+                        run_kwargs = {"images": images or None, "video": video}
+
+                    enhanced_lines = []
+                    for idx in range(prompts_count):
                         enhanced = enhancer_run(
                             text_input, model_name, precision, system_prompt,
-                            gen_params, max_tokens, seed, images=images or None, video=video
+                            gen_params, max_tokens, seed + idx, **run_kwargs
                         )
-                    if enhanced:
-                        final_values = enhanced
-                        print(f"✨CreaPrompt enhanced: {final_values}")
+                        if enhanced:
+                            enhanced = enhanced.replace("\n", " ").strip()
+                            enhanced_lines.append(enhanced)
+                            print(f"✨CreaPrompt enhanced: {enhanced}")
+                    if enhanced_lines:
+                        final_values = "\n".join(enhanced_lines)
 
                 elif images or use_text or cat_lines:
                     # ---- Mode mélange : combine les sources activées (image/texte/catégories) ----
@@ -638,16 +645,22 @@ class CreaPrompt_0:
                         if enhanced_lines:
                             final_values = "\n".join(enhanced_lines)
                     else:
-                        # Texte seul, ou image(s) + texte, sans catégories : un seul appel
+                        # Texte seul, ou image(s) + texte, sans catégories :
+                        # un appel LLM par prompt demandé
                         checklist = enhancer_merge_checklist(n_img, with_keywords=False, with_text=use_text)
                         text_input = f"{base_instruction}\n\n{context_str}\n{checklist}"
-                        enhanced = enhancer_run(
-                            text_input, model_name, precision, system_prompt,
-                            gen_params, max_tokens, seed
-                        )
-                        if enhanced:
-                            final_values = enhanced.replace("\n", " ").strip()
-                            print(f"✨CreaPrompt enhanced: {final_values}")
+                        enhanced_lines = []
+                        for idx in range(prompts_count):
+                            enhanced = enhancer_run(
+                                text_input, model_name, precision, system_prompt,
+                                gen_params, max_tokens, seed + idx
+                            )
+                            if enhanced:
+                                enhanced = enhanced.replace("\n", " ").strip()
+                                enhanced_lines.append(enhanced)
+                                print(f"✨CreaPrompt enhanced: {enhanced}")
+                        if enhanced_lines:
+                            final_values = "\n".join(enhanced_lines)
                 # sinon : aucune source activée, le prompt brut est conservé
             except Exception as e:
                 print(f"⚠️ CreaPrompt Enhancer error, raw prompt returned: {e}")
